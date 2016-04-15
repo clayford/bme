@@ -170,6 +170,7 @@ or.u(t53)
 
 # asymptotic conditional methods for J (2 X 2) Tables
 
+
 # 5.3 ---------------------------------------------------------------------
 
 mtout <- mantelhaen.test(t53, correct = FALSE)

@@ -75,3 +75,13 @@ mh.rr <- function(x){
 }
 mh.rr(t53)
 
+# Using the Hmisc function mhgr
+# need to transform data to one record per obs
+t53df <- as.data.frame(as.table(t53))
+surv <- rep(rep(c(1,0),6), t53df$Freq)
+t53df2 <- t53df[rep(1:12, t53df$Freq),]
+t53df2$surv <- surv
+t53df2$Freq <- NULL
+
+with(t53df2, Hmisc::mhgr(y = surv, group = ReceptorLevel, strata = stage))
+

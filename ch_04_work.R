@@ -186,3 +186,7 @@ statistic(tout)^2
 
 tout <- lbl_test(as.table(t416), scores = list("stage" = c(1,2,5)))
 statistic(tout)^2
+
+# see also the prop.trend.test in base R
+prop.trend.test(x = c(7,26,21), n = c(67, 96, 29))
+# slightly different answer
