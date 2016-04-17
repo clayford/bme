@@ -1,0 +1,13 @@
+Package: bme
+Title: Biostatistical Methods in Epidemiology
+Version: 1.0
+Authors@R: person("Clay", "Ford", email = "joe.clayton.ford@gmail.com", role = c("aut", "cre"))
+Description: Data and functions for Biostatistical Methods in Epidemiology
+    (Newman, 2001)
+Depends:
+    R (>= 3.2.4)
+Imports:
+    epitools
+License: CC0
+LazyData: true
+RoxygenNote: 5.0.1
