@@ -1,7 +1,5 @@
 *.Rproj
 .Rproj.user/
-*.Rdata
-*.Rda
 .Rproj.user
 .Rhistory
 
