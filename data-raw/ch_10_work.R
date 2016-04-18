@@ -161,69 +161,99 @@ f2 <- function(x)ppois(q = 2, lambda = 10*x) - 0.025
 uniroot(f1, interval = c(0,10))
 uniroot(f2, interval = c(0,10))
 
-exact.rate.ci <- function(d,n,ci=0.95){
-  alpha <- (1-ci)/2
-  f1 <- function(x)1 - ppois(q = d-1, lambda = n*x) - alpha
-  f2 <- function(x)ppois(q = d, lambda = n*x) - alpha
-  f1.out <- uniroot(f1, interval = c(0,n))
-  f2.out <- uniroot(f2, interval = c(0,n))
-  list(lower = f1.out$root, upper = f2.out$root)
-}
-exact.rate.ci(d = 2, n = 10)
-exact.rate.ci(d = 2, n = 10, ci=0.90)
+# exact.rate.ci <- function(d,n,ci=0.95){
+#   alpha <- (1-ci)/2
+#   f1 <- function(x)1 - ppois(q = d-1, lambda = n*x) - alpha
+#   f2 <- function(x)ppois(q = d, lambda = n*x) - alpha
+#   f1.out <- uniroot(f1, interval = c(0,n))
+#   f2.out <- uniroot(f2, interval = c(0,n))
+#   list(lower = f1.out$root, upper = f2.out$root)
+# }
+# exact.rate.ci(d = 2, n = 10)
+# exact.rate.ci(d = 2, n = 10, ci=0.90)
 
 
-exact.rate.test <- function(d, n, null=0, conf.level = 0.95){
+exact.rate.test <- function(time, status, null=0, conf.level = 0.95){
+  dname <- deparse(substitute(time))
+  alternative <- "two.sided"
   # estimate
+  d <- sum(status, na.rm = TRUE)
+  n <- sum(time, na.rm = TRUE)
   est <- d/n
+  names(est) <- "hazard rate"
+  names(null) <- names(est)
   # CI
   alpha <- (1-conf.level)/2
   f1 <- function(x)1 - ppois(q = d-1, lambda = n*x) - alpha
   f2 <- function(x)ppois(q = d, lambda = n*x) - alpha
   f1.out <- uniroot(f1, interval = c(0,n))
   f2.out <- uniroot(f2, interval = c(0,n))
+  CINT <- c(f1.out$root, f2.out$root)
+  attr(CINT, "conf.level") <- conf.level
+  
   # test
   p.value <- min(ppois(q = d, lambda = n*null) * 2, 1)
-  list(estimate = est, null = null, p.value = round(p.value,3),
-       conf.int = c(round(f1.out$root,3), round(f2.out$root,3)))
+  RVAL <- list(p.value = p.value, estimate = est, null.value = null,
+       conf.int = CINT, alternative = alternative,
+       method = "Exact Hazard Rate Test for a single sample", 
+       data.name = dname)
+  class(RVAL) <- "htest"
+  return(RVAL)
 }
 
-exact.rate.test(d = 2, n = 10, null = 0.4)
+exact.rate.test(time = 10, status = 2, null = 0.4)
+with(breast.survival, exact.rate.test(time = time, status = status))
+with(breast.survival, exact.rate.test(time = time, status = status, null = 0.01))
+hout <- with(breast.survival, exact.rate.test(time = time, status = status, null = 0.01))
+str(hout)
+
 
 # asympotic methods for single sample
-rate.test <- function(d, n, null=0, conf.level = 0.95, explicit=TRUE){
+rate.test <- function(time, status, null=1, conf.level = 0.95, explicit=TRUE){
+  dname <- deparse(substitute(time))
+  alternative <- "two.sided"
   # estimate
+  d <- sum(status, na.rm = TRUE)
+  n <- sum(time, na.rm = TRUE)
   est <- d/n
+  names(est) <- "hazard rate"
+  names(null) <- names(est)
   # CI
   alpha <- (1-conf.level)/2
   if(explicit){
-    ci <- est + c(-1,1)*((qnorm(1 - alpha)*sqrt(d))/n)  
+    CINT <- est + c(-1,1)*((qnorm(1 - alpha)*sqrt(d))/n)  
   } else {
     a <- n^2
     b <- -n*(2*d + qnorm(1 - alpha)^2)
     c <- d^2
-    ci <- (-b + c(-1,1)*sqrt(b^2 - 4*a*c))/(2*a)
+    CINT <- (-b + c(-1,1)*sqrt(b^2 - 4*a*c))/(2*a)
   }
+  attr(CINT, "conf.level") <- conf.level
+  
   # test
-  test.statistic <- ((d - null*n)^2)/(null*n)
-  p.value <- pchisq(test.statistic, df = 1, lower.tail = FALSE)
-  list(estimate = est, null = null, test.statistic = round(test.statistic,3), 
-       p.value = round(p.value,3),
-       conf.int = round(ci,3))
+  STATISTIC <- ((d - null*n)^2)/(null*n)
+  names(STATISTIC) <- "X-squared"
+  p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+  RVAL <- list(statistic = STATISTIC, p.value = p.value, estimate = est, 
+               null.value = null,
+               conf.int = CINT, alternative = alternative,
+               method = "Asymptotic Hazard Rate Test for a single sample", 
+               data.name = dname)
+  class(RVAL) <- "htest"
+  return(RVAL)
 }
 # Examples 10.5 and 10.6
-rate.test(d = 2, n = 10, null = 0.4)
-rate.test(d = 5, n = 25, null = 0.4)
-rate.test(d = 10, n = 50, null = 0.4)
+rate.test(time = 10, status = 2, null = 0.4)
+rate.test(time = 25, status = 5, null = 0.4)
+rate.test(time = 50, status = 10, null = 0.4)
 
-rate.test(d = 2, n = 10, null = 0.4, explicit = FALSE)
-rate.test(d = 5, n = 25, null = 0.4, explicit = FALSE)
-rate.test(d = 10, n = 50, null = 0.4, explicit = FALSE)
+rate.test(time = 10, status = 2, null = 0.4, explicit = FALSE)
+rate.test(time = 25, status = 5, null = 0.4, explicit = FALSE)
+rate.test(time = 50, status = 10, null = 0.4, explicit = FALSE)
 
-#Example 10.7
-exact.rate.test(d = sum(dat$status), n = sum(dat$time))
-rate.test(d = sum(dat$status), n = sum(dat$time))
-rate.test(d = sum(dat$status), n = sum(dat$time), explicit = FALSE)
+# Example 10.7
+with(breast.survival, rate.test(time = time, status = status))
+with(breast.survival, rate.test(time = time, status = status, explicit = FALSE))
 
 
 

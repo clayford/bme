@@ -32,12 +32,10 @@
 #' ## A graphical assessment can also be performed by plotting the estimated 
 #' ## exponential survival curve and the Kaplan-Meier curve and deciding subjectively
 #' ## whether the latter appears to be exponential in appearance.
-#' 
 #' ## Fig 10.2(a), p. 198
 #' require(flexsurv)
 #' fit.exp <- flexsurvreg(formula = Surv(time, status) ~ 1, data = breast.survival, dist="exp")
 #' plot(fit.exp, ci=FALSE)
-#' 
 cox.oakes <- function(time,status) {
   dname <- deparse(substitute(time))
   d <- sum(status) # number of deaths in cohort
