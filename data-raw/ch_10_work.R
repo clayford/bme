@@ -88,6 +88,7 @@ cox.oakes <- function(time,status) {
   d <- sum(status) # number of deaths in cohort
   n <- sum(time) # total amount of time cohort was under observation
   lam0.hat <- d/n # deaths per person-month
+  names(lam0.hat) <- "hazard rate"
   si <- log(lam0.hat * time)
   ei.hat <- lam0.hat * time
   
@@ -95,14 +96,17 @@ cox.oakes <- function(time,status) {
   denom <- d + sum((si^2)*ei.hat) - (sum(si*ei.hat))^2 / d
   X.co <- num/denom
   p.value <- pchisq(X.co, df = 1, lower.tail = FALSE)
-  RVAL <- list(statistic = c(statistic = X.co), p.value = p.value, 
+  RVAL <- list(statistic = c(statistic = X.co), p.value = p.value,
+               estimate = lam0.hat,
                method = "Cox-Oakes Test of Exponentiality", 
                data.name = dname)
   class(RVAL) <- "htest"
   return(RVAL)
 }
 
-cox.oakes(time = dat$time, status = dat$status)
+cox.oakes(time = breast.survival$time, status = breast.survival$status)
+c.out <- cox.oakes(time = breast.survival$time, status = breast.survival$status)
+str(c.out)
 
 # example 10.2
 dat2 <- read.csv("ovarian.csv")

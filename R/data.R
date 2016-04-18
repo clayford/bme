@@ -107,4 +107,4 @@
 #' }
 #' @source Fleming, et al. Modified Kolmogorov-Smirnov test procedures with application to arbitrarily 
 #' right-censored data. \emph{Biometrics} 36, 607-625.
-"ovarian"
+"ovarian.cancer"

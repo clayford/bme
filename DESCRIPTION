@@ -7,7 +7,7 @@ Description: Data and functions for Biostatistical Methods in Epidemiology
 Depends:
     R (>= 3.2.4)
 Imports:
-    epitools
+    epitools, flexsurv
 License: CC0
 LazyData: true
 RoxygenNote: 5.0.1
