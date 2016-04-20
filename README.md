@@ -1,6 +1,8 @@
 # bme
 
-This package contains data files for the book [Biostatistical Methods in Epidemiology](http://www.wiley.com/WileyCDA/WileyTitle/productCd-EHEP002366.html), by Stephen C. Newman, Wiley-Interscience (2001)
+This package contains functions and data files for the book [Biostatistical Methods in Epidemiology](http://www.wiley.com/WileyCDA/WileyTitle/productCd-EHEP002366.html), by Stephen C. Newman, Wiley-Interscience (2001)
+
+It is a work in progress.
 
 ## Installation
 
