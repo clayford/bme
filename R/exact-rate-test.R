@@ -3,7 +3,7 @@
 #' Performs an exact test of the null that a single sample hazard rate is equal to some value.
 #' 
 #' @param time a numeric vector of survival times.
-#' @param status status a numeric vector of censoring indicators, with 0 = censored and
+#' @param status a numeric vector of censoring indicators, with 0 = censored and
 #'   1 = dead.
 #' @param null the null hazard rate. Default is 1.
 #' @param conf.level confidence level of the returned confidence interval. Must be a single number between 0 and 1.
@@ -45,7 +45,7 @@ exact.rate.test <- function(time, status, null=1, conf.level = 0.95){
   attr(CINT, "conf.level") <- conf.level
   
   # test
-  p.value <- min(ppois(q = d, lambda = n*null) * 2, 1)
+  p.value <- min( min(ppois(q = d, lambda = n*null), 1 - ppois(q = d-1, lambda = n*null)) * 2, 1)
   RVAL <- list(p.value = p.value,estimate = est, null.value = null,
                conf.int = CINT, alternative = alternative,
                method = "Exact Hazard Rate Test for a single sample", 

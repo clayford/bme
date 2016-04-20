@@ -3,7 +3,7 @@
 #' Performs an asymtotic test of the null that a single sample hazard rate is equal to some value.
 #' 
 #' @param time a numeric vector of survival times.
-#' @param status status a numeric vector of censoring indicators, with 0 = censored and
+#' @param status a numeric vector of censoring indicators, with 0 = censored and
 #'   1 = dead.
 #' @param null the null hazard rate. Default is 1. 
 #' @param conf.level confidence level of the returned confidence interval. Must be a single number between 0 and 1.

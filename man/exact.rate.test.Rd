@@ -9,7 +9,7 @@ exact.rate.test(time, status, null = 1, conf.level = 0.95)
 \arguments{
 \item{time}{a numeric vector of survival times.}
 
-\item{status}{status a numeric vector of censoring indicators, with 0 = censored and
+\item{status}{a numeric vector of censoring indicators, with 0 = censored and
 1 = dead.}
 
 \item{null}{the null hazard rate. Default is 1.}
