@@ -33,7 +33,7 @@ A list with class \code{"htest"} containing the following
   }
 }
 \description{
-Performs an asymtotic test of the null that a single sample hazard rate is equal to some value.
+Performs an asymptotic test of the null that a single sample hazard rate is equal to some value.
 }
 \examples{
 ## Examples 10.5 and 10.6

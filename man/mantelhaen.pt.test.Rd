@@ -12,7 +12,7 @@ mantelhaen.pt.test(time, status, group)
 \item{status}{a numeric vector of censoring indicators, with 0 = censored and
 1 = dead.}
 
-\item{group}{a factor vector with at least two levels}
+\item{group}{a factor vector with at least two levels.}
 }
 \value{
 A list with class \code{"htest"} containing the following 

@@ -8,7 +8,7 @@
 #' @param time a numeric vector of survival times.
 #' @param status a numeric vector of censoring indicators, with 0 = censored and
 #'   1 = dead.
-#' @param group a factor vector with at least two levels
+#' @param group a factor vector with at least two levels.
 #' @return  A list with class \code{"htest"} containing the following 
 #'   components: 
 #'   \describe{ 

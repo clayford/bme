@@ -1,6 +1,6 @@
 #' Asymptotic hazard rate test - single sample
 #' 
-#' Performs an asymtotic test of the null that a single sample hazard rate is equal to some value.
+#' Performs an asymptotic test of the null that a single sample hazard rate is equal to some value.
 #' 
 #' @param time a numeric vector of survival times.
 #' @param status a numeric vector of censoring indicators, with 0 = censored and
