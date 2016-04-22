@@ -73,15 +73,34 @@ oddsratio(t(breast), re="both", method = "wald", verbose=TRUE)
 # potential impact of misclassification
 # solving equations at bottom of p. 99; displayed in Table 4.5(b)
 lhs <- matrix(c(0.9, 0.01, 0.1, 0.99), nrow = 2, byrow = TRUE)
-rhs <- matrix(c(23,25),ncol=1)
+rhs <- breast[,1]
 low <- solve(lhs, rhs)
-
-lhs <- matrix(c(0.9, 0.01, 0.1, 0.99), nrow = 2, byrow = TRUE)
-rhs <- matrix(c(31,113),ncol=1)
+rhs <- breast[,2]
 high <- solve(lhs, rhs)
+(low[1]*high[2])/(low[2]*high[1])
 
-breastb <- cbind(low, high)
 oddsratio(t(breastb), rev = "both", method = "wald")
+
+oddsratio(breastb, method = "wald")$measure[2,1]
+# function for missclassification
+
+adjusted.odds.ratio <- function(data, sensitivity, specificity){
+  if(!is.matrix(data) || nrow(data)!=2 || ncol(data) != 2) stop("data must be a 2 x 2 matrix")
+  if(sensitivity > 1 || sensitivity < 0 || specificity > 1 || specificity < 0) stop("sensitivity and specificity must be in (0,1)")
+  lhs <- matrix(c(sensitivity, 1-specificity, 1-sensitivity, specificity), nrow = 2, byrow = TRUE)
+  rhs <- data[,1]
+  low <- solve(lhs, rhs)
+  rhs <- data[,2]
+  high <- solve(lhs, rhs)
+  adj <- (low[1]*high[2])/(low[2]*high[1])
+  unadj <- (data[1,1]*data[2,2])/(data[1,2]*data[2,1])
+  list("Adjusted odds ratio after accounting for misclassification"=adj,
+       "Estimated odds ratio based on (possibly) misclassified data"= unadj)
+}
+
+adjusted.odds.ratio(data = breast, sensitivity = 0.9, specificity = 0.99)
+adjusted.odds.ratio(data = breast.receptor, sensitivity = 0.9, specificity = 0.99)
+adjusted.odds.ratio(data = breast, sensitivity = 0.9, specificity = 2)
 
 # section 4.2 -------------------------------------------------------------
 
