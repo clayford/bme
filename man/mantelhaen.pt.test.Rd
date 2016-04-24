@@ -34,7 +34,12 @@ given if any expected count is less than 5, along with the offending expected
 count(s).
 }
 \examples{
+## Example 10.12
 with(breast.survival, mantelhaen.pt.test(time, status, stage))
+
+## Example 10.13, assessment of the Poisson-Exponential Assumption
+mantelhaen.pt.test(time = c(2363, 7108), status = c(5,44), group = gl(n = 2, k = 1))
+## p = 0.017; moderate evidence of unequal hazard rates in the two time intervals.
 }
 \references{
 Newman (2001), page 216.

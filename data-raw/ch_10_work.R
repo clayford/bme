@@ -600,3 +600,127 @@ mantelhaen.pt.test(time = dat$time, status = dat$status, group = dat$receptor)
 # test warning
 dat2 <- dat[-(1:8),]
 mantelhaen.pt.test(time = dat2$time, status = dat2$status, group = dat2$receptor)
+
+
+# 10.3 --------------------------------------------------------------------
+
+# 10.3.1 - asymptotic (unconditional) methods for K (1 x 2) Tables
+# Example 10.14
+# dat <- xtabs(~ status + receptor.level + stage, data=breast.survival, subset = status==1)
+
+dk <- with(breast.survival, tapply(status, list(receptor.level, stage), sum))
+nk <- with(breast.survival, tapply(time, list(receptor.level, stage), sum))
+mk <- apply(dk,2,sum)
+n <- apply(nk,2,sum)
+
+# estimate hazard ratio
+f1 <- function(x){
+  sum((x*mk*nk[1,])/(x*nk[1,] + nk[2,])) - sum(dk[1,])
+}
+HR <- uniroot(f = f1, interval = c(0,1e5))$root
+
+hr2 <- mk/(HR*nk[1,] + nk[2,])
+hr1 <- HR*hr2
+# fitted counts:
+dh1 <- hr1*nk[1,]
+dh2 <- hr2*nk[2,]
+  
+# confidence interval
+V <- sum((1/dh1 + 1/dh2)^(-1))
+exp(log(HR) + c(-1,1)*qnorm(0.975)/sqrt(V))
+
+# tests of association
+# Null: log(HR) = 0
+# expected counts
+e1 <- nk[1,]*mk/n
+e2 <- nk[2,]*mk/n
+
+V0 <- sum((nk[1,]*nk[2,]*mk)/(n^2))
+
+# wald test of association
+X_w <- log(HR)^2 * V0
+pchisq(X_w, df = 1, lower.tail = FALSE)
+# LRT of association
+X_lr <- 2 * sum(dk[1,] * log((dk[1,]/e1)) + dk[2,] * log((dk[2,]/e2)))
+pchisq(X_lr, df = 1, lower.tail = FALSE)
+
+# make a function
+k.hazard.ratio.test <- function(time, status, exposure, strata, 
+                                Wald=TRUE, conf.level=0.95){
+  dname <- deparse(substitute(time))
+  alternative <- "two.sided"
+  
+  dk <- tapply(status, list(exposure, strata), sum)
+  nk <- tapply(time, list(exposure, strata), sum)
+  mk <- apply(dk,2,sum)
+  n <- apply(nk,2,sum)
+  
+  # estimate hazard ratio
+  f1 <- function(x){
+    sum((x*mk*nk[1,])/(x*nk[1,] + nk[2,])) - sum(dk[1,])
+  }
+  est <- uniroot(f = f1, interval = c(0,1e5))$root
+  names(est) <- "common hazard ratio"
+  null <- 1
+  names(null) <- names(est)
+  
+  hr2 <- mk/(est*nk[1,] + nk[2,])
+  hr1 <- est*hr2
+  # fitted counts:
+  dh1 <- hr1*nk[1,]
+  dh2 <- hr2*nk[2,]
+  
+  # confidence interval
+  V <- sum((1/dh1 + 1/dh2)^(-1))
+  alpha <- (1-conf.level)/2
+    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)/sqrt(V))
+  attr(CINT, "conf.level") <- conf.level
+  
+  # tests of association
+  # Null: log(HR) = 0
+  # wald test of association
+  if(Wald){
+    V0 <- sum((nk[1,]*nk[2,]*mk)/(n^2))
+    STATISTIC <- log(est)^2 * V0
+    p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+    
+  } else {
+    # LRT of association
+    # expected counts
+    e1 <- nk[1,]*mk/n
+    e2 <- nk[2,]*mk/n
+    STATISTIC <- 2 * sum(dk[1,] * log((dk[1,]/e1)) + dk[2,] * log((dk[2,]/e2)))
+    p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+  }
+  names(STATISTIC) <- "X-squared"
+  METHOD <- paste(if(Wald) "Wald" else "Likelihood Ratio", "Test of association")
+  RVAL <- list(statistic = STATISTIC, p.value = p.value, estimate = est, 
+               null.value = null,
+               conf.int = CINT, alternative = alternative,
+               method = METHOD, 
+               data.name = dname)  
+  class(RVAL) <- "htest"
+  return(RVAL)  
+}
+
+with(breast.survival, 
+     k.hazard.ratio.test(time = time, status = status, 
+                         exposure = receptor.level, strata = stage))
+  
+with(breast.survival, 
+     k.hazard.ratio.test(time = time, status = status, 
+                         exposure = receptor.level, strata = stage, Wald=FALSE))
+
+  
+# LRT test of homogeneity
+X_h <- 2 * sum(dk[1,] * log((dk[1,]/dh1)) + dk[2,] * log((dk[2,]/dh2)))
+pchisq(X_h, df = ncol(dk) - 1, lower.tail = FALSE)
+
+# test for linear trend
+s <- 1:3
+num <- sum(s * (dk[1,] - dh1))^2
+vk <- (1/dh1 + 1/dh2)^(-1)
+den <- sum(s^2 * vk) - (sum(s * vk))^2 / sum(vk)
+X_t <- num/den
+pchisq(X_t, df = 1, lower.tail = FALSE)
+

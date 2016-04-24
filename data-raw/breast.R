@@ -53,5 +53,6 @@ breast.survival <- data.frame(time = c(ILow, IHigh, IILow, IIHigh, IIILow, IIIHi
                      stage = c(rep("I", (12 + 57)), rep("II", (23 + 75)), rep("III", (15 + 17))),
                      receptor.level = rep(rep(c("low","high"), 3), r0))
 breast.survival <- breast.survival[order(breast.survival$time),]
+breast.survival$receptor.level <- relevel(breast.survival$receptor.level, ref = "low")
 rm(list = ls(pattern = "I")); rm(r0)
 # write.csv(tab9.1, file = "BreastCancer.csv", row.names = FALSE)
