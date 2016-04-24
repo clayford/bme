@@ -4,7 +4,7 @@
 \alias{mantelhaen.pt.test}
 \title{Mantel-Haenszel Test of association for person-time data}
 \usage{
-mantelhaen.pt.test(time, status, group)
+mantelhaen.pt.test(time, status, exposure)
 }
 \arguments{
 \item{time}{a numeric vector of survival times.}
@@ -12,7 +12,8 @@ mantelhaen.pt.test(time, status, group)
 \item{status}{a numeric vector of censoring indicators, with 0 = censored and
 1 = dead.}
 
-\item{group}{a factor vector with at least two levels.}
+\item{exposure}{a factor vector with two levels indicating exposure. The
+first level is assumed to be the exposed condition.}
 }
 \value{
 A list with class \code{"htest"} containing the following 
@@ -38,7 +39,7 @@ count(s).
 with(breast.survival, mantelhaen.pt.test(time, status, stage))
 
 ## Example 10.13, assessment of the Poisson-Exponential Assumption
-mantelhaen.pt.test(time = c(2363, 7108), status = c(5,44), group = gl(n = 2, k = 1))
+mantelhaen.pt.test(time = c(2363, 7108), status = c(5,44), exposure = gl(n = 2, k = 1))
 ## p = 0.017; moderate evidence of unequal hazard rates in the two time intervals.
 }
 \references{

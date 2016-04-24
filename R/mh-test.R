@@ -8,7 +8,8 @@
 #' @param time a numeric vector of survival times.
 #' @param status a numeric vector of censoring indicators, with 0 = censored and
 #'   1 = dead.
-#' @param group a factor vector with at least two levels.
+#' @param exposure a factor vector with two levels indicating exposure. The
+#'   first level is assumed to be the exposed condition.
 #' @return  A list with class \code{"htest"} containing the following 
 #'   components: 
 #'   \describe{ 
@@ -26,17 +27,17 @@
 #' with(breast.survival, mantelhaen.pt.test(time, status, stage))
 #' 
 #' ## Example 10.13, assessment of the Poisson-Exponential Assumption
-#' mantelhaen.pt.test(time = c(2363, 7108), status = c(5,44), group = gl(n = 2, k = 1))
+#' mantelhaen.pt.test(time = c(2363, 7108), status = c(5,44), exposure = gl(n = 2, k = 1))
 #' ## p = 0.017; moderate evidence of unequal hazard rates in the two time intervals.
 
-mantelhaen.pt.test <- function(time, status, group){
+mantelhaen.pt.test <- function(time, status, exposure){
   dname <- deparse(substitute(time))
   alternative <- "two.sided"
   null <- 1
-  d <- tapply(status, group, sum)
-  n <- tapply(time, group, sum)
+  d <- tapply(status, exposure, sum)
+  n <- tapply(time, exposure, sum)
   est <- (d*n[1])/(d[1]*n)
-  names(est) <- levels(group)
+  names(est) <- levels(exposure)
   names(null) <- "hazard ratio"
   e <- n * sum(d) / sum(n)
   STATISTIC <- sum((d - e)^2 / e)
