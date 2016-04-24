@@ -262,104 +262,96 @@ with(breast.survival, rate.test(time = time, status = status, explicit = FALSE))
 # Poisson methods for unstratified survival data
 
 # Example 10.8
-n1 <- sum(breast.survival$time[breast.survival$receptor=="Low"])
-n2 <- sum(breast.survival$time[breast.survival$receptor=="High"])
-d1 <- sum(breast.survival$status[breast.survival$receptor=="Low"])
-d2 <- sum(breast.survival$status[breast.survival$receptor=="High"])
+n <- with(breast.survival,tapply(time, receptor.level, sum))
+d <- with(breast.survival,tapply(status, receptor.level, sum))
 
 # hazard ratio
-hr.hat <- (d1 * n2)/(d2 * n1)
+hr.hat <- (d[1] * n[2])/(d[2] * n[1])
 
 # cox-oakes for low and high receptor levels
-with(breast.survival[breast.survival$receptor=="Low",], 
+with(breast.survival[breast.survival$receptor.level=="low",], 
      cox.oakes(time = time, status = status))
-with(breast.survival[breast.survival$receptor=="High",], 
+with(breast.survival[breast.survival$receptor.level=="high",], 
      cox.oakes(time = time, status = status))
 
 # stratum specific HR estimates
-with(breast.survival[breast.survival$receptor=="Low",], 
+with(breast.survival[breast.survival$receptor.level=="low",], 
      rate.test(time = time, status = status, explicit = FALSE))
-with(breast.survival[breast.survival$receptor=="High",], 
+with(breast.survival[breast.survival$receptor.level=="high",], 
      rate.test(time = time, status = status, explicit = FALSE))
 
 # HR conf interval
-exp(log(hr.hat) + c(-1,1)*qnorm(0.975)*sqrt((1/d1) + (1/d2)))
+exp(log(hr.hat) + c(-1,1)*qnorm(0.975)*sqrt((1/d[1]) + (1/d[2])))
 
 # Wald and LRT tests of association
 # we say there is no association between exposure and survival if lamba_1 = lambda_2
 
-m <- hr.hat*(d2/n2)*n1 + (d2/n2)*n2
-e1 <- (n1*m)/(n1 + n2)
-e2 <- (n2*m)/(n1 + n2)
+m <- hr.hat*(d[2]/n[2])*n[1] + (d[2]/n[2])*n[2]
+e1 <- (n[1]*m)/(n[1] + n[2])
+e2 <- (n[2]*m)/(n[1] + n[2])
 
 # Wald test
-X_w <- (log(hr.hat)^2 * n1 * n2 * m)/((n1 + n2)^2)
+X_w <- (log(hr.hat)^2 * n[1] * n[2] * m)/((n[1] + n[2])^2)
 pchisq(X_w, df = 1, lower.tail = FALSE)
 # LRT
-X_lr <- 2*(d1 * log(d1/e1) + d2 * log(d2/e2))
+X_lr <- 2*(d[1] * log(d[1]/e1) + d[2] * log(d[2]/e2))
 pchisq(X_lr, df = 1, lower.tail = FALSE)
 
 # Example 10.9
 dat <- breast.survival[breast.survival$stage=="III",]
-n1 <- sum(dat$time[dat$receptor=="Low"])
-n2 <- sum(dat$time[dat$receptor=="High"])
-d1 <- sum(dat$status[dat$receptor=="Low"])
-d2 <- sum(dat$status[dat$receptor=="High"])
+n <- with(dat,tapply(time, receptor.level, sum))
+d <- with(dat,tapply(status, receptor.level, sum))
+
 
 # hazard ratio
-hr.hat <- (d1 * n2)/(d2 * n1)
+hr.hat <- (d[1] * n[2])/(d[2] * n[1])
 # HR conf interval
-exp(log(hr.hat) + c(-1,1)*qnorm(0.975)*sqrt((1/d1) + (1/d2)))
+exp(log(hr.hat) + c(-1,1)*qnorm(0.975)*sqrt((1/d[1]) + (1/d[2])))
 
-m <- hr.hat*(d2/n2)*n1 + (d2/n2)*n2
-e1 <- (n1*m)/(n1 + n2)
-e2 <- (n2*m)/(n1 + n2)
+m <- hr.hat*(d[2]/n[2])*n[1] + (d[2]/n[2])*n[2]
+e1 <- (n[1]*m)/(n[1] + n[2])
+e2 <- (n[2]*m)/(n[1] + n[2])
 
 # Wald test
-X_w <- (log(hr.hat)^2 * n1 * n2 * m)/((n1 + n2)^2)
+X_w <- (log(hr.hat)^2 * n[1] * n[2] * m)/((n[1] + n[2])^2)
 pchisq(X_w, df = 1, lower.tail = FALSE)
 # LRT
-X_lr <- 2*(d1 * log(d1/e1) + d2 * log(d2/e2))
+X_lr <- 2*(d[1] * log(d[1]/e1) + d[2] * log(d[2]/e2))
 pchisq(X_lr, df = 1, lower.tail = FALSE)
 # moderate evidence for an association between receptor level and survival in the stage II cohort
 
 
-hazard.ratio.test <- function(time, status, group, Wald=TRUE, conf.level=0.95, rev=FALSE,
+hazard.ratio.test <- function(time, status, exposure, Wald=TRUE, conf.level=0.95, 
                               exact=FALSE){
   dname <- deparse(substitute(time))
   alternative <- "two.sided"
-  g <- levels(group)
-  # reverse order of groups?
-  if(rev) g <- rev(g)
+  n <- tapply(time, exposure, sum)
+  d <- tapply(status, exposure, sum)
+  if(d[1] == 0 || d[2] == 0) est <- (d[1] + 0.5) * n2 / (d[2]  + 0.5) * n[1]
+  else est <- (d[1] * n[2]) / (d[2] * n[1])
+  names(est) <- "hazard ratio"
+  null <- 1
+  names(null) <- names(est)
+  alpha <- (1-conf.level)/2
+  
   if(!exact){
-    n1 <- sum(time[group==g[1]])
-    n2 <- sum(time[group==g[2]])
-    d1 <- sum(status[group==g[1]])
-    d2 <- sum(status[group==g[2]])
-    
     # hazard ratio
-    if(d1 == 0 || d2 == 0) est <- (d1 + 0.5) * n2 / (d2  + 0.5) * n1
-    else est <- (d1 * n2) / (d2 * n1)
-    names(est) <- "hazard ratio"
-    null <- 1
-    names(null) <- names(est)
     # HR conf interval
-    alpha <- (1-conf.level)/2
-    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)*sqrt((1/d1) + (1/d2)))
+    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)*sqrt((1/d[1]) + (1/d[2])))
     attr(CINT, "conf.level") <- conf.level
     
     # Wald and LRT tests of association
-    m <- est*(d2/n2)*n1 + (d2/n2)*n2
-    e1 <- (n1*m)/(n1 + n2)
-    e2 <- (n2*m)/(n1 + n2)
+    m <- est*(d[2]/n[2])*n[1] + (d[2]/n[2])*n[2]
+    e1 <- (n[1]*m)/(n[1] + n[2])
+    e2 <- (n[2]*m)/(n[1] + n[2])
     
     # Wald test
     if(Wald){
-      STATISTIC <- (log(est)^2 * n1 * n2 * m)/((n1 + n2)^2)
+      STATISTIC <- (log(est)^2 * n[1] * n[2] * m)/((n[1] + n[2])^2)
       p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)  
     } else {
       # LRT
-      STATISTIC <- 2*(d1 * log(d1/e1) + d2 * log(d2/e2))
+      STATISTIC <- 2*(d[1] * log(d[1]/e1) + d[2] * log(d[2]/e2))
       p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
     }
     names(STATISTIC) <- "X-squared"
@@ -369,32 +361,20 @@ hazard.ratio.test <- function(time, status, group, Wald=TRUE, conf.level=0.95, r
                  method = METHOD, 
                  data.name = dname)  
   } else {
-    d1 <- sum(status[group==g[1]])
-    m <- sum(status)
-    d2<- m - d1
-    n1 <- sum(time[group==g[1]])
-    n <- sum(time)
-    n2 <- n - n1
-    # estimate
-    if(d1 == 0 || d2 == 0) est <- (d1 + 0.5) * n2 / (d2  + 0.5) * n1
-    else est <- (d1 * n2) / (d2 * n1)
-    names(est) <- "hazard ratio"
-    null <- 1
-    names(null) <- names(est)
-    # CI
-    alpha <- (1-conf.level)/2
-    f1 <- function(x)1 - pbinom(d1-1, size = m, prob = x) - alpha
-    f2 <- function(x)pbinom(d1, size = m, prob = x) - alpha
+    m <- sum(d)
+    f1 <- function(x)1 - pbinom(d[1]-1, size = m, prob = x) - alpha
+    f2 <- function(x)pbinom(d[1], size = m, prob = x) - alpha
     f1.out <- uniroot(f1, interval = c(0,1))
     f2.out <- uniroot(f2, interval = c(0,1))
     CINTpi <- c(f1.out$root, f2.out$root)
-    CINT <- CINTpi*n2/((1 - CINTpi)*n1) # HR CI
+    CINT <- CINTpi*n[2]/((1 - CINTpi)*n[1]) # HR CI
     attr(CINT, "conf.level") <- conf.level
     
     # test
     # exact test of association
-    pi_0 <- (null * n1) / (null * n1 + n2)
-    p.value <- min( min(pbinom(q = d1, size = m, prob = pi_0), 1 - pbinom(q = d1-1, size = m, prob = pi_0)) * 2, 1)
+    pi_0 <- (null * n[1]) / (null * n[1] + n[2])
+    p.value <- min( min(pbinom(q = d[1], size = m, prob = pi_0), 
+                        1 - pbinom(q = d[1]-1, size = m, prob = pi_0)) * 2, 1)
     RVAL <- list(p.value = p.value, estimate = est, null.value = null,
                  conf.int = CINT, alternative = alternative,
                  method = "Exact Hazard Ratio Test of Association", 
@@ -405,19 +385,19 @@ hazard.ratio.test <- function(time, status, group, Wald=TRUE, conf.level=0.95, r
   return(RVAL)
 }
 # Example 10.8
-with(breast.survival, hazard.ratio.test(time, status, receptor, rev = TRUE))
-with(breast.survival, hazard.ratio.test(time, status, receptor, rev = TRUE, Wald = FALSE))
-hrt.out <- with(breast.survival, hazard.ratio.test(time, status, receptor, rev = TRUE, Wald = FALSE))
+with(breast.survival, hazard.ratio.test(time, status, receptor.level))
+with(breast.survival, hazard.ratio.test(time, status, receptor.level, Wald = FALSE))
+hrt.out <- with(breast.survival, hazard.ratio.test(time, status, receptor.level, Wald = FALSE))
 str(hrt.out)
 # Example 10.9
 # Receptor Level-Breast Cancer: Stage III
 dat <- breast.survival[breast.survival$stage=="III",]
-hazard.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, rev = TRUE)
-hazard.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, Wald = FALSE, rev = TRUE)
+hazard.ratio.test(time = dat$time, status = dat$status, exposure = dat$receptor.level)
+hazard.ratio.test(time = dat$time, status = dat$status, exposure = dat$receptor.level, 
+                  Wald = FALSE)
 # Example 10.10
-hrte.out <- hazard.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, 
-                  rev = TRUE, exact = TRUE)
-str(hrte.out)
+hazard.ratio.test(time = dat$time, status = dat$status, 
+                              exposure = dat$receptor.level,exact = TRUE)
 
 # Fig 10.7
 library(flexsurv)
@@ -427,76 +407,74 @@ plot(fite, ci=FALSE)
 # 10.2.2
 # Exact conditional methods for a single 1 x 2 table
 
-d1 <- sum(breast.survival$status[breast.survival$receptor=="Low" & breast.survival$stage=="III"])
-m <- sum(breast.survival$status[breast.survival$stage=="III"])
-n1 <- sum(breast.survival$time[breast.survival$receptor=="Low" & breast.survival$stage=="III"])
-d2 <- m - d1
-n <- sum(breast.survival$time[breast.survival$stage=="III"])
-n2 <- n - n1
-
-
+dat <- subset(breast.survival, stage=="III")
+d <- with(dat, tapply(status,receptor.level, sum))
+n <- with(dat, tapply(time,receptor.level, sum))
+m <- sum(d)
 
 alpha <- (1-0.95)/2
 1 - pbinom(12-1, size = 20, prob = 0.361)
 pbinom(12, size = 20, prob = 0.809)
 
 
-f1 <- function(x)1 - pbinom(d1-1, size = m, prob = x) - alpha
-f2 <- function(x)pbinom(d1, size = m, prob = x) - alpha
+f1 <- function(x)1 - pbinom(d[1]-1, size = m, prob = x) - alpha
+f2 <- function(x)pbinom(d[1], size = m, prob = x) - alpha
 f1.out <- uniroot(f1, interval = c(0,1))
 f2.out <- uniroot(f2, interval = c(0,1))
 CINTpi <- c(f1.out$root, f2.out$root)
-CINT <- CINTpi*n2/((1 - CINTpi)*n1) # HR CI
+CINT <- CINTpi*n[2]/((1 - CINTpi)*n[1]) # HR CI
 
 # exact test of association
-n1 <- sum(breast.survival$time[breast.survival$receptor=="Low" & breast.survival$stage=="III"])
-n <- sum(breast.survival$time[breast.survival$stage=="III"])
-pi_0 <- n1/n
+# n1 <- sum(breast.survival$time[breast.survival$receptor.level=="low" & 
+#                                  breast.survival$stage=="III"])
+# n <- sum(breast.survival$time[breast.survival$stage=="III"])
+pi_0 <- n[1]/sum(n)
 # or
 null <- 1
-pi_0 <- (null * n1) / (null * n1 + n2)
+pi_0 <- (null * n[1]) / (null * n[1] + n[2])
 
-min( min(pbinom(q = d1, size = m, prob = pi_0), 1 - pbinom(q = d1-1, size = m, prob = pi_0)) * 2, 1)
+min( min(pbinom(q = d[1], size = m, prob = pi_0), 
+         1 - pbinom(q = d[1]-1, size = m, prob = pi_0)) * 2, 1)
 
-exact.ratio.test <- function(time, status, group, null=1, conf.level = 0.95, rev=FALSE){
-  dname <- deparse(substitute(time))
-  alternative <- "two.sided"
-  g <- levels(group)
-  if(rev) g <- rev(g)
-  d1 <- sum(status[group==g[1]])
-  m <- sum(status)
-  d2<- m - d1
-  n1 <- sum(time[group==g[1]])
-  n <- sum(time)
-  n2 <- n - n1
-  # estimate
-  if(d1 == 0 || d2 == 0) est <- (d1 + 0.5) * n2 / (d2  + 0.5) * n1
-  else est <- (d1 * n2) / (d2 * n1)
-  names(est) <- "hazard ratio"
-  names(null) <- names(est)
-  # CI
-  alpha <- (1-conf.level)/2
-  f1 <- function(x)1 - pbinom(d1-1, size = m, prob = x) - alpha
-  f2 <- function(x)pbinom(d1, size = m, prob = x) - alpha
-  f1.out <- uniroot(f1, interval = c(0,1))
-  f2.out <- uniroot(f2, interval = c(0,1))
-  CINTpi <- c(f1.out$root, f2.out$root)
-  CINT <- CINTpi*n2/((1 - CINTpi)*n1) # HR CI
-  attr(CINT, "conf.level") <- conf.level
-  
-  # test
-  # exact test of association
-  pi_0 <- (null * n1) / (null * n1 + n2)
-  p.value <- min( min(pbinom(q = d1, size = m, prob = pi_0), 1 - pbinom(q = d1-1, size = m, prob = pi_0)) * 2, 1)
-  RVAL <- list(p.value = p.value, estimate = est, null.value = null,
-               conf.int = CINT, alternative = alternative,
-               method = "Exact Hazard Ratio Test of Association", 
-               data.name = dname)
-  class(RVAL) <- "htest"
-  return(RVAL)
-}
-
-exact.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, rev = TRUE)
+# exact.ratio.test <- function(time, status, group, null=1, conf.level = 0.95, rev=FALSE){
+#   dname <- deparse(substitute(time))
+#   alternative <- "two.sided"
+#   g <- levels(group)
+#   if(rev) g <- rev(g)
+#   d1 <- sum(status[group==g[1]])
+#   m <- sum(status)
+#   d2<- m - d1
+#   n1 <- sum(time[group==g[1]])
+#   n <- sum(time)
+#   n2 <- n - n1
+#   # estimate
+#   if(d1 == 0 || d2 == 0) est <- (d1 + 0.5) * n2 / (d2  + 0.5) * n1
+#   else est <- (d1 * n2) / (d2 * n1)
+#   names(est) <- "hazard ratio"
+#   names(null) <- names(est)
+#   # CI
+#   alpha <- (1-conf.level)/2
+#   f1 <- function(x)1 - pbinom(d1-1, size = m, prob = x) - alpha
+#   f2 <- function(x)pbinom(d1, size = m, prob = x) - alpha
+#   f1.out <- uniroot(f1, interval = c(0,1))
+#   f2.out <- uniroot(f2, interval = c(0,1))
+#   CINTpi <- c(f1.out$root, f2.out$root)
+#   CINT <- CINTpi*n2/((1 - CINTpi)*n1) # HR CI
+#   attr(CINT, "conf.level") <- conf.level
+#   
+#   # test
+#   # exact test of association
+#   pi_0 <- (null * n1) / (null * n1 + n2)
+#   p.value <- min( min(pbinom(q = d1, size = m, prob = pi_0), 1 - pbinom(q = d1-1, size = m, prob = pi_0)) * 2, 1)
+#   RVAL <- list(p.value = p.value, estimate = est, null.value = null,
+#                conf.int = CINT, alternative = alternative,
+#                method = "Exact Hazard Ratio Test of Association", 
+#                data.name = dname)
+#   class(RVAL) <- "htest"
+#   return(RVAL)
+# }
+# 
+# exact.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, rev = TRUE)
 
 # 10.2.3
 # Mantel-Haenszel test of association for person-time data

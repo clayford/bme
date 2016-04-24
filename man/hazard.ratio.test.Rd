@@ -4,8 +4,8 @@
 \alias{hazard.ratio.test}
 \title{Hazard Ratio Test of association for unstratified survival data}
 \usage{
-hazard.ratio.test(time, status, group, Wald = TRUE, conf.level = 0.95,
-  rev = FALSE, exact = FALSE)
+hazard.ratio.test(time, status, exposure, Wald = TRUE, conf.level = 0.95,
+  exact = FALSE)
 }
 \arguments{
 \item{time}{a numeric vector of survival times.}
@@ -13,7 +13,8 @@ hazard.ratio.test(time, status, group, Wald = TRUE, conf.level = 0.95,
 \item{status}{a numeric vector of censoring indicators, with 0 = censored and
 1 = dead.}
 
-\item{group}{a factor vector with at least two levels.}
+\item{exposure}{a factor vector with two levels indicating exposure. The
+first level is assumed to be the exposed condition.}
 
 \item{Wald}{a logical indicating whether to use the Wald or Likelihood Ratio 
 Test. Default is TRUE.}
@@ -21,12 +22,12 @@ Test. Default is TRUE.}
 \item{conf.level}{conf.level confidence level of the returned confidence 
 interval. Must be a single number between 0 and 1. Default is 0.95.}
 
-\item{rev}{a logical indicating to whether to reverse the order of the factor
-levels when estimating the hazard ratio.}
-
 \item{exact}{a logical indicating whether the asymptotic (unconditional) test
 or the exact test should be computed. Default is FALSE. The \code{"Wald"}
 argument is ignored when set to TRUE.}
+
+\item{rev}{a logical indicating to whether to reverse the order of the factor
+levels when estimating the hazard ratio.}
 }
 \value{
 A list with class \code{"htest"} containing the following 
@@ -46,16 +47,17 @@ Performs a test of the null that the hazard ratio between two groups is 1.
 }
 \examples{
 ## Example 10.8
-with(breast.survival, hazard.ratio.test(time, status, receptor, rev = TRUE))
-with(breast.survival, hazard.ratio.test(time, status, receptor, rev = TRUE, Wald = FALSE))
+with(breast.survival, hazard.ratio.test(time, status, receptor.level))
+with(breast.survival, hazard.ratio.test(time, status, receptor.level, Wald = FALSE))
 ## Example 10.9
 ## Receptor Level-Breast Cancer: Stage III
-dat <- breast.survival[breast.survival$stage=="III",]
-hazard.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, rev = TRUE)
-hazard.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, Wald = FALSE, rev = TRUE)
+dat <- subset(breast.survival, stage=="III")
+hazard.ratio.test(time = dat$time, status = dat$status, exposure = dat$receptor.level)
+hazard.ratio.test(time = dat$time, status = dat$status, exposure = dat$receptor.level, 
+                  Wald = FALSE)
 ## Example 10.10
-hazard.ratio.test(time = dat$time, status = dat$status, group = dat$receptor, 
-                  rev = TRUE, exact = TRUE)
+hazard.ratio.test(time = dat$time, status = dat$status, exposure = dat$receptor.level, 
+                  exact = TRUE)
 }
 \references{
 Newman (2001), page 206 - 213.
