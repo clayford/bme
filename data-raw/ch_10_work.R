@@ -692,9 +692,7 @@ with(breast.survival,
 
 
 
-# LRT test of homogeneity
-X_h <- 2 * sum(dk[1,] * log((dk[1,]/dh1)) + dk[2,] * log((dk[2,]/dh2)))
-pchisq(X_h, df = ncol(dk) - 1, lower.tail = FALSE)
+
 
 # test for linear trend
 s <- 1:3
@@ -781,3 +779,46 @@ hazard.ratios <- function(time, status, exposure, strata){
   return(est)
 }
 with(breast.survival, hazard.ratios(time, status, receptor.level, stage))
+
+
+
+# LRT test of homogeneity
+X_h <- 2 * sum(dk[1,] * log((dk[1,]/dh1)) + dk[2,] * log((dk[2,]/dh2)))
+pchisq(X_h, df = ncol(dk) - 1, lower.tail = FALSE)
+
+# make a function
+
+lrt.homogeneity <- function(time, status, exposure, strata){
+  dname <- paste("\n  ", deparse(substitute(time)), 
+                 "\n  ", deparse(substitute(status)))
+  dk <- tapply(status, list(exposure, strata), sum)
+  nk <- tapply(time, list(exposure, strata), sum)
+  mk <- apply(dk,2,sum)
+  n <- apply(nk,2,sum)
+  # estimate common hazard ratio; need this for test statistic calculation
+  f1 <- function(x){
+    sum((x*mk*nk[1,])/(x*nk[1,] + nk[2,])) - sum(dk[1,])
+  }
+  est <- uniroot(f = f1, interval = c(0,1e5))$root
+  hr2 <- mk/(est*nk[1,] + nk[2,])
+  hr1 <- est*hr2
+  # fitted counts:
+  dh1 <- hr1*nk[1,]
+  dh2 <- hr2*nk[2,]
+
+  STATISTIC <- 2 * sum(dk[1,] * log((dk[1,]/dh1)) + dk[2,] * log((dk[2,]/dh2)))
+  df <- ncol(dk) - 1
+  names(df) <- "df"
+  p.value <- pchisq(STATISTIC, df = df, lower.tail = FALSE)
+  names(STATISTIC) <- "X-squared"
+  METHOD <- paste("Likelihood ratio test of homogeneity")
+  RVAL <- list(statistic = STATISTIC, parameter = df, p.value = p.value,
+               method = METHOD, 
+               data.name = dname)  
+  class(RVAL) <- "htest"
+  return(RVAL) 
+  
+}
+with(breast.survival, lrt.homogeneity(time, status, receptor.level, stage)) 
+
+
