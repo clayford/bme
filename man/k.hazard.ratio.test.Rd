@@ -13,26 +13,27 @@ k.hazard.ratio.test(time, status, exposure, strata, Wald = TRUE,
 \item{status}{a numeric vector of censoring indicators, with 0 = censored and
 1 = dead.}
 
-\item{exposure}{a factor vector with two levels indicating exposure. The
+\item{exposure}{a factor vector with at least two levels indicating exposure. The
 first level is assumed to be the exposed condition.}
 
 \item{strata}{a factor vector with at least two levels indicating strata.}
 
 \item{Wald}{a logical indicating whether to use the Wald or Likelihood Ratio 
-Test. Default is TRUE.}
+Test. Default is TRUE. Only used in the 2 by 2 by K case.}
 
 \item{conf.level}{conf.level confidence level of the returned confidence 
-interval. Must be a single number between 0 and 1. Default is 0.95.}
+interval. Must be a single number between 0 and 1. Default is 0.95. Only used in the 2 by 2 by K case.}
 }
 \value{
 A list with class \code{"htest"} containing the following 
   components: 
   \describe{ 
   \item{statistic}{The chi-square test statistic.} 
+  \item{parameter}{The degrees of freedom of the approximate chi-squared distribution of the test statistic.}
   \item{p.value}{The p-value of the test.} 
-  \item{estimate}{Common hazard ratio estimate.} 
-  \item{null.value}{The null common hazard ratio, which is currently set to 1.} 
-  \item{alternative}{A character string describing the alternative hypothesis. Currently only "two.sided".} 
+  \item{estimate}{Common hazard ratio estimate. Only present in the 2 by 2 by K case.} 
+  \item{null.value}{The null common hazard ratio, which is currently set to 1. Only present in the 2 by 2 by K case.} 
+  \item{alternative}{A character string describing the alternative hypothesis. Currently only "two.sided". Only present in the 2 by 2 by K case.} 
   \item{method}{A character string indicating the method employed.} 
   \item{data.name}{A character string giving the name of the data.} }
 }
@@ -44,10 +45,17 @@ Performs a test of the null that the hazard ratio between \emph{k} strata is 1.
 with(breast.survival, 
      k.hazard.ratio.test(time = time, status = status, 
                          exposure = receptor.level, strata = stage))
+                         
+## LR Test 
 with(breast.survival, 
      k.hazard.ratio.test(time = time, status = status,
                          exposure = receptor.level, strata = stage, 
                          Wald=FALSE))
+                         
+## Example 10.18 - polychotomous exposure
+with(breast.survival, 
+     k.hazard.ratio.test(time = time, status = status,
+                         exposure = stage, strata = receptor.level))
 }
 \references{
 Newman (2001), page 219 - 221.

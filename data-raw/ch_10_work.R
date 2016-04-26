@@ -822,3 +822,122 @@ lrt.homogeneity <- function(time, status, exposure, strata){
 with(breast.survival, lrt.homogeneity(time, status, receptor.level, stage)) 
 
 
+# 10.3.7 methods for K (1 X I) Tables
+
+# Example 10.18
+dik <- with(breast.survival, tapply(status, list(stage, receptor.level), sum))
+nik <- with(breast.survival, tapply(time, list(stage, receptor.level), sum))
+mk <- apply(dik,2,sum)
+nk <- apply(nik,2,sum)
+# expected counts
+eik <- sapply(seq_along(levels(breast.survival$receptor.level)),function(x)nik[,x]*mk[x]/nk[x])
+
+di. <- apply(dik,1,sum)
+ei. <- apply(eik,1,sum)
+
+X_oe <- sum(((di. - ei.)^2)/ei.)
+pchisq(X_oe, df = nrow(dik)-1, lower.tail = FALSE)
+
+breast.array <- xtabs(~ status + stage + receptor.level, data=breast.survival)
+mantelhaen.test(breast.array) # does not match book
+
+
+# make a function
+# add to k.hazard.ratio.test
+# test of association for stratified data when exposure is polychotomous
+k.hazard.ratio.test <- function(time, status, exposure, strata, 
+                                Wald=TRUE, conf.level=0.95){
+  dname <- paste("\n  ", deparse(substitute(time)), 
+                 "\n  ", deparse(substitute(status)))
+  alternative <- "two.sided"
+  
+  # 2 exposure levels
+  if(length(levels(exposure))==2){
+
+    dk <- tapply(status, list(exposure, strata), sum)
+    nk <- tapply(time, list(exposure, strata), sum)
+    mk <- apply(dk,2,sum)
+    n <- apply(nk,2,sum)
+    
+    # estimate hazard ratio
+    f1 <- function(x){
+      sum((x*mk*nk[1,])/(x*nk[1,] + nk[2,])) - sum(dk[1,])
+    }
+    est <- uniroot(f = f1, interval = c(0,1e5))$root
+    names(est) <- "common hazard ratio"
+    null <- 1
+    names(null) <- names(est)
+    
+    hr2 <- mk/(est*nk[1,] + nk[2,])
+    hr1 <- est*hr2
+    # fitted counts:
+    dh1 <- hr1*nk[1,]
+    dh2 <- hr2*nk[2,]
+    
+    # confidence interval
+    V <- sum((1/dh1 + 1/dh2)^(-1))
+    alpha <- (1-conf.level)/2
+    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)/sqrt(V))
+    attr(CINT, "conf.level") <- conf.level
+    
+    # tests of association
+    # Null: log(HR) = 0
+    # wald test of association
+    if(Wald){
+      V0 <- sum((nk[1,]*nk[2,]*mk)/(n^2))
+      STATISTIC <- log(est)^2 * V0
+      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+      
+    } else {
+      # LRT of association
+      # expected counts
+      e1 <- nk[1,]*mk/n
+      e2 <- nk[2,]*mk/n
+      STATISTIC <- 2 * sum(dk[1,] * log((dk[1,]/e1)) + dk[2,] * log((dk[2,]/e2)))
+      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+    }
+    names(STATISTIC) <- "X-squared"
+    METHOD <- paste(if(Wald) "Wald" else "Likelihood Ratio", "Test of association")
+    RVAL <- list(statistic = STATISTIC, parameter = c(df = 1), p.value = p.value, estimate = est, 
+                 null.value = null,
+                 conf.int = CINT, alternative = alternative,
+                 method = METHOD, 
+                 data.name = dname)   
+  } else {
+    dik <- tapply(status, list(exposure, strata), sum)
+    nik <- tapply(time, list(exposure, strata), sum)
+    mk <- apply(dik,2,sum)
+    nk <- apply(nik,2,sum)
+    # expected counts
+    eik <- sapply(seq_along(levels(strata)),function(x)nik[,x]*mk[x]/nk[x])
+    
+    di. <- apply(dik,1,sum)
+    ei. <- apply(eik,1,sum)
+    
+    STATISTIC <- sum(((di. - ei.)^2)/ei.)
+    df <- nrow(dik) - 1
+    names(df) <- "df"
+    p.value <- pchisq(STATISTIC, df = df, lower.tail = FALSE)
+    names(STATISTIC) <- "X-squared"
+    METHOD <- ("X-squared Test of association - polychotomous exposure")
+    RVAL <- list(statistic = STATISTIC, parameter = df, p.value = p.value, 
+                 method = METHOD, 
+                 data.name = dname)   
+  }
+
+  class(RVAL) <- "htest"
+  return(RVAL)  
+}
+with(breast.survival,
+     k.hazard.ratio.test(time = time, status = status,
+                         exposure = receptor.level, strata = stage))
+
+# LR test
+with(breast.survival, 
+     k.hazard.ratio.test(time = time, status = status,
+                         exposure = receptor.level, strata = stage, 
+                         Wald=FALSE))
+# polychotomous exposure
+with(breast.survival, 
+     k.hazard.ratio.test(time = time, status = status, 
+                         exposure = stage, strata = receptor.level))
