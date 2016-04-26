@@ -105,6 +105,18 @@
 #'  \item{time}{survival time measured in days}
 #'  \item{status}{censoring variable; 0 = censored; 1 = died of ovarian cancer}
 #' }
-#' @source Fleming, et al. Modified Kolmogorov-Smirnov test procedures with application to arbitrarily 
+#' @source Newman (2001), Table 9.6; Fleming, et al. Modified Kolmogorov-Smirnov test procedures with application to arbitrarily 
 #' right-censored data. \emph{Biometrics} 36, 607-625.
 "ovarian.cancer"
+
+#' Oral contraceptive data (2 x 2 matrix)
+#' 
+#' Data from a case-control study investigating oral contraceptives as a risk
+#' factor for myocardial infarction.
+#' 
+#' @format 2 x 2 matrix \describe{ 
+#'  \item{Myocardial infarction}{case, control} 
+#'  \item{Oral Contraceptive}{yes, no} }
+#' @source Newman (2001), Table 11.2; Shapiro, et al. (1979) Oral-contraceptive use in relation to myocardial
+#' infarction. \emph{The Lancet} April 7, 743-746
+"oral"

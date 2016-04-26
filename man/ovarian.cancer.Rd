@@ -11,7 +11,7 @@
  \item{status}{censoring variable; 0 = censored; 1 = died of ovarian cancer}
 }}
 \source{
-Fleming, et al. Modified Kolmogorov-Smirnov test procedures with application to arbitrarily 
+Newman (2001), Table 9.6; Fleming, et al. Modified Kolmogorov-Smirnov test procedures with application to arbitrarily 
 right-censored data. \emph{Biometrics} 36, 607-625.
 }
 \usage{
