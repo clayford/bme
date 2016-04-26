@@ -9,19 +9,71 @@ t45a <- matrix(c(23,25,31,113),ncol=2, dimnames = list(survival = c("dead","aliv
 # the following estimates risk ratio and provides CI
 riskratio(t(t45a), rev = "both")
 
-# Wald test of association
-RR <- riskratio(t(t45a), rev = "both")$measure[2,1]
-r1 <- apply(t45a,2,sum)[1]
-r2 <- apply(t45a,2,sum)[2]
-m1 <- apply(t45a,1,sum)[1]
-m2 <- apply(t45a,1,sum)[2]
+# risk ratio by hand
+a <- breast[1,]
+r <- apply(breast,2,sum)
+m <- apply(breast,1,sum)
+RR <- (a[1]*r[2])/(a[2]*r[1])
 
-X_w <- ((log(RR)^2) * r1 * r2 * m1) / (sum(t45a) * m2)
+
+# Wald test of association using epitools
+# RR <- riskratio(t(t45a), rev = "both")$measure[2,1]
+# r1 <- apply(t45a,2,sum)[1]
+# r2 <- apply(t45a,2,sum)[2]
+# m1 <- apply(t45a,1,sum)[1]
+# m2 <- apply(t45a,1,sum)[2]
+
+X_w <- ((log(RR)^2) * r[1] * r[2] * m[1]) / (sum(t45a) * m[2])
 pchisq(X_w, df = 1, lower.tail = FALSE)
 
 # LRT of association
 X_lr <- 2*sum(t45a*log(t45a/epitools::expected(t45a)))
 pchisq(X_lr, df = 1, lower.tail = FALSE)
+
+# function for this?
+risk.ratio.test <- function(data, conf.level=0.95, Wald=TRUE){
+  dname <- deparse(substitute(data))
+  alternative <- "two.sided"
+
+    a <- data[1,]
+    b <- data[2,]
+    r <- apply(data,2,sum)
+    m <- apply(data,1,sum)
+    # risk ratio
+    if(a[1]==0 || a[2]==0){
+      est <- ((a[1] + 0.5) *r[2])/((a[2] + 0.5)*r[1])
+    } else {
+      est <- (a[1]*r[2])/(a[2]*r[1])  
+    }
+    names(est) <- "risk ratio"
+    null <- 1
+    names(null) <- names(est)
+    # variance
+    v <- b[1]/(a[1]*r[1]) + b[2]/(a[2]*r[2])
+    alpha <- (1-conf.level)/2
+    CINT <- exp(log(est) + c(-1,1) * qnorm(1 - alpha) * sqrt(v))
+    attr(CINT, "conf.level") <- conf.level
+    if(Wald){
+      STATISTIC <- ((log(est)^2) * r[1] * r[2] * m[1]) / (sum(data) * m[2])
+      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+  } else {
+    # LRT of association
+    STATISTIC <- 2*sum(data * log(data/epitools::expected(data)))
+    p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+  }
+  names(STATISTIC) <- "X-squared"
+  METHOD <- paste(if(Wald) "Wald" else "Likelihood Ratio", "Test of association for risk ratio")
+  RVAL <- list(statistic = STATISTIC, parameter = c(df = 1), p.value = p.value, estimate = est, 
+               null.value = null,
+               conf.int = CINT, alternative = alternative,
+               method = METHOD, 
+               data.name = dname) 
+  class(RVAL) <- "htest"
+  return(RVAL)
+}
+# Example 6.1
+risk.ratio.test(breast)
+risk.ratio.test(breast, Wald = FALSE)
 
 
 # 6.3 ---------------------------------------------------------------------

@@ -10,7 +10,7 @@
 #' @param strata a factor vector with at least two levels indicating strata.
 #' @param Wald a logical indicating whether to use the Wald or Likelihood Ratio 
 #'   Test. Default is TRUE. Only used in the 2 by 2 by K case.
-#' @param conf.level conf.level confidence level of the returned confidence 
+#' @param conf.level confidence level of the returned confidence 
 #'   interval. Must be a single number between 0 and 1. Default is 0.95. Only used in the 2 by 2 by K case.
 #' @return  A list with class \code{"htest"} containing the following 
 #'   components: 
@@ -23,7 +23,9 @@
 #'   \item{alternative}{A character string describing the alternative hypothesis. Currently only "two.sided". Only present in the 2 by 2 by K case.} 
 #'   \item{method}{A character string indicating the method employed.} 
 #'   \item{data.name}{A character string giving the name of the data.} }
-#' @references Newman (2001), page 219 - 221.
+#' @seealso \code{\link{hazard.ratio.test}} for unstratified survival data and \code{\link{hazard.ratios}} 
+#' for calculating estimated hazard ratios of stratified survival data.
+#' @references Newman (2001), page 219 - 221, 226.
 #' @examples 
 #' ## Example 10.14
 #' with(breast.survival, 

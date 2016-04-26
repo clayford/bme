@@ -21,7 +21,7 @@ first level is assumed to be the exposed condition.}
 \item{Wald}{a logical indicating whether to use the Wald or Likelihood Ratio 
 Test. Default is TRUE. Only used in the 2 by 2 by K case.}
 
-\item{conf.level}{conf.level confidence level of the returned confidence 
+\item{conf.level}{confidence level of the returned confidence 
 interval. Must be a single number between 0 and 1. Default is 0.95. Only used in the 2 by 2 by K case.}
 }
 \value{
@@ -58,6 +58,10 @@ with(breast.survival,
                          exposure = stage, strata = receptor.level))
 }
 \references{
-Newman (2001), page 219 - 221.
+Newman (2001), page 219 - 221, 226.
+}
+\seealso{
+\code{\link{hazard.ratio.test}} for unstratified survival data and \code{\link{hazard.ratios}} 
+for calculating estimated hazard ratios of stratified survival data.
 }
 
