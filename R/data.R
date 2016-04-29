@@ -120,3 +120,45 @@
 #' @source Newman (2001), Table 11.2; Shapiro, et al. (1979) Oral-contraceptive use in relation to myocardial
 #' infarction. \emph{The Lancet} April 7, 743-746
 "oral"
+
+#' Oral contraceptive data, stratified by age group (2 x 2 x 3 array)
+#' 
+#' Data from a case-control study investigating oral contraceptives as a risk
+#' factor for myocardial infarction, stratified by three age groups.
+#' 
+#' @format 2 x 2 x 3 array \describe{ 
+#'  \item{disease (Myocardial infarction)}{case, control} 
+#'  \item{OC (Oral Contraceptive)}{yes, no} 
+#'  \item{age group}{25-34, 35-55, 45-49}
+#'  }
+#' @source Newman (2001), Table 11.5(a); Shapiro, et al. (1979) Oral-contraceptive use in relation to myocardial
+#' infarction. \emph{The Lancet} April 7, 743-746
+"oral.age"
+
+#' Estrogen data (2 x 2 matrix)
+#' 
+#' Data from a matched-pairs case-control study investigating estrogen use as a risk factor
+#' for endometrial cancer.
+#' 
+#' @format 2 x 2 matrix
+#' \describe{
+#' \item{Case}{exposed, unexposed}
+#' \item{Control}{exposed, unexposed}
+#' }
+#' @source Newman (2001), Table 11.10; Antunes, et al. (1979) Endometrial cancer and estrogen use; 
+#' Report of a large case-control study. \emph{NEJM} 300, 9-13.
+"estrogen"
+
+#' Estrogen data (2 x 5 matrix)
+#' 
+#' Data from a (1:4) matched-pairs case-control study investigating estrogen use as a risk factor
+#' for endometrial cancer.
+#' 
+#' @format 2 x 5 matrix
+#' \describe{
+#' \item{Case}{exposed, unexposed}
+#' \item{Number of exposed controls}{0,1,2,3,4}
+#' }
+#' @source Newman (2001), Table 11.14; Mack, et al. (1976) Estrogens and endometrial cancer in a retirement
+#' community. \emph{NEJM} 294, 1262-1267.
+"estrogen2"

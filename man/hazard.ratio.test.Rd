@@ -19,7 +19,7 @@ first level is assumed to be the exposed condition.}
 \item{Wald}{a logical indicating whether to use the Wald or Likelihood Ratio 
 Test. Default is TRUE.}
 
-\item{conf.level}{conf.level confidence level of the returned confidence 
+\item{conf.level}{confidence level of the returned confidence 
 interval. Must be a single number between 0 and 1. Default is 0.95.}
 
 \item{exact}{a logical indicating whether the asymptotic (unconditional) test

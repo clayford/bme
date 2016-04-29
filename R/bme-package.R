@@ -6,6 +6,7 @@
 #' 
 #' This package was created out of simple enjoyment of the book and is not
 #' endorsed or authorized by the author or the publisher.
+#'
 #' 
 #' @references Newman, Stephen C. (2001). Biostatistical Methods in Epidemiology. Wiley-Interscience.
 #' 

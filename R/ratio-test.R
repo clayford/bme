@@ -9,7 +9,7 @@
 #'   first level is assumed to be the exposed condition.
 #' @param Wald a logical indicating whether to use the Wald or Likelihood Ratio 
 #'   Test. Default is TRUE.
-#' @param conf.level conf.level confidence level of the returned confidence 
+#' @param conf.level confidence level of the returned confidence 
 #'   interval. Must be a single number between 0 and 1. Default is 0.95.
 #' @param rev a logical indicating to whether to reverse the order of the factor
 #'   levels when estimating the hazard ratio.
