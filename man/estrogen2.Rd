@@ -10,7 +10,7 @@
 \item{Number of exposed controls}{0,1,2,3,4}
 }}
 \source{
-Newman (2001), Table 11.14; Mack, et al. (1976) Estrogens and endometrial cancer in a retirement
+Newman (2001), Table 11.14; Mack, et al. (1976). Estrogens and endometrial cancer in a retirement
 community. \emph{NEJM} 294, 1262-1267.
 }
 \usage{
