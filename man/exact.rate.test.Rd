@@ -4,7 +4,7 @@
 \alias{exact.rate.test}
 \title{Exact hazard rate test - single sample}
 \usage{
-exact.rate.test(time, status, null = 1, conf.level = 0.95)
+exact.rate.test(time, status, null = 1, conf.level = 0.95, upper = 100)
 }
 \arguments{
 \item{time}{a numeric vector of survival times.}
@@ -15,6 +15,9 @@ exact.rate.test(time, status, null = 1, conf.level = 0.95)
 \item{null}{the null hazard rate. Default is 1.}
 
 \item{conf.level}{confidence level of the returned confidence interval. Must be a single number between 0 and 1.}
+
+\item{upper}{upper end point of the interval to be searched for one dimensional 
+root (zero) finding (passed to \code{\link[stats]{uniroot}})}
 }
 \value{
 A list with class \code{"htest"} containing the following 

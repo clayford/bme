@@ -7,6 +7,8 @@
 #'   1 = dead.
 #' @param null the null hazard rate. Default is 1.
 #' @param conf.level confidence level of the returned confidence interval. Must be a single number between 0 and 1.
+#' @param upper upper end point of the interval to be searched for one dimensional 
+#'   root (zero) finding (passed to \code{\link[stats]{uniroot}})
 #' @return  A list with class \code{"htest"} containing the following 
 #'   components: 
 #'   \describe{ 
@@ -26,7 +28,7 @@
 #' ## With Breast Cancer Survival data
 #' with(breast.survival, exact.rate.test(time = time, status = status))
 #' with(breast.survival, exact.rate.test(time = time, status = status, null = 0.01))
-exact.rate.test <- function(time, status, null=1, conf.level = 0.95){
+exact.rate.test <- function(time, status, null=1, conf.level = 0.95, upper = 100){
   dname <- deparse(substitute(time))
   alternative <- "two.sided"
   # estimate
@@ -39,8 +41,8 @@ exact.rate.test <- function(time, status, null=1, conf.level = 0.95){
   alpha <- (1-conf.level)/2
   f1 <- function(x)1 - ppois(q = d-1, lambda = n*x) - alpha
   f2 <- function(x)ppois(q = d, lambda = n*x) - alpha
-  f1.out <- uniroot(f1, interval = c(0,n))
-  f2.out <- uniroot(f2, interval = c(0,n))
+  f1.out <- uniroot(f1, interval = c(0,upper))
+  f2.out <- uniroot(f2, interval = c(0,upper))
   CINT <- c(f1.out$root, f2.out$root)
   attr(CINT, "conf.level") <- conf.level
   

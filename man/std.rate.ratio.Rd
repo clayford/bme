@@ -40,4 +40,7 @@ with(schizophrenia,
 \references{
 Newman (2001), pages 251-255.
 }
+\seealso{
+\code{\link[epitools]{ageadjust.direct}} in the \code{epitools} package.
+}
 
