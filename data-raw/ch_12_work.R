@@ -1,5 +1,5 @@
 # Biostats in epidemiology
-# ch 4 work
+# ch 12 work
 
 
 # 12.2 --------------------------------------------------------------------
@@ -202,4 +202,55 @@ with(subset(schizophrenia,age.group=="10-19"),
 
 # 12.4 --------------------------------------------------------------------
 
+# age-period-cohort analysis
 
+# Fig 12.1(a)
+year <- as.integer(rownames(females))
+plot(year, females[,1], type="b", ylim = c(0,50), 
+     ylab = "Death Rate (per 100,000)", xlab="Year")
+lines(year, females[,2], type = "b", pch = 2)
+lines(year, females[,3], type = "b", pch = 3)
+lines(year, females[,4], type = "b", pch = 4)
+lines(year, females[,5], type = "b", pch = 5)
+legend("topright", legend = colnames(females), pch = 1:5, title = "Age group")
+
+# Fig 12.2(b)
+ag <- unclass(factor(colnames(females)))
+plot(ag, females[1,], type="b", ylim = c(0,50), 
+     ylab = "Death Rate (per 100,000)", xlab="Age group", axes=F)
+lines(ag, females[2,], type = "b", pch = 2)
+lines(ag, females[3,], type = "b", pch = 3)
+lines(ag, females[4,], type = "b", pch = 4)
+lines(ag, females[5,], type = "b", pch = 5)
+legend("top", legend = rownames(females), pch = 1:5, title = "Time period")
+axis(1, at=1:5, labels = colnames(females))
+axis(2, at=seq(0,50,10), labels = seq(0,50,10))
+
+# Fig 12.2(c)
+# diag(females[1:3,3:5])
+# k <- pmin(nrow(females) - 1, ncol(females) - 3)
+# diag(females[1:(1 + k),3:(3 + k)])
+
+getDiag <- function(m,i,j){
+  x <- vector(mode = "list", length = length(i))
+  y <- vector(mode = "list", length = length(i))
+  k <- pmin(nrow(m) - i, ncol(m) - j)
+  for(n in seq_along(i)){
+    y[[n]] <- diag(m[i[n]:(i[n] + k[n]),j[n]:(j[n] + k[n])])    
+    x[[n]] <- j[n]:(j[n] + k[n])    
+  }
+  c(x,y)
+}
+# row and column coordinats for getDiag function
+i <- c(3,2,1,1,1)
+j <- c(1,1,1,2,3)
+dr <- getDiag(females,i,j)
+plot(dr[[1]], dr[[6]], type="b", xlim = c(1,5), ylim = c(0,50), 
+     ylab = "Death Rate (per 100,000)", xlab="Age group", axes=F)
+lines(dr[[2]], dr[[7]], type="b", pch=2)
+lines(dr[[3]], dr[[8]], type="b", pch=3)
+lines(dr[[4]], dr[[9]], type="b", pch=4)
+lines(dr[[5]], dr[[10]], type="b", pch=5)
+axis(1, at=1:5, labels = colnames(females))
+axis(2, at=seq(0,50,10), labels = seq(0,50,10))
+legend("top", legend = seq(1930,1970,10), pch = 1:5, title = "Birth Cohort")
