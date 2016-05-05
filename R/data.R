@@ -243,3 +243,20 @@
 #' legend("top", legend = seq(1930,1970,10), pch = 1:5, title = "Birth Cohort")
 #' rm(i,j,dr, getDiag)
 "females"
+
+#' Male death and census counts, Canada, 1991
+#' 
+#' Data on the number of deaths from all causes, neoplasms, circulatory disease, and injuries, as well as 
+#' the census population for Canadian males in 1991. 
+#' 
+#' @format data frame with 19 rows and 6 variables
+#' \describe{
+#' \item{age.group}{the age group}
+#' \item{deaths.all}{number of deaths - all causes}
+#' \item{neoplasm.deaths}{number of deaths - neoplasms}
+#' \item{circ.deaths}{number of deaths - ciculatory disease}
+#' \item{injury.deaths}{number of deaths - injury}
+#' \item{pop}{census population for age group}
+#' }
+#' @source Newman (2001), Table 13.3
+"males"
