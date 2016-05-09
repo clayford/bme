@@ -30,7 +30,8 @@ Root finding refers to \code{\link[stats]{uniroot}}, which is used to find sampl
 }
 \value{
 Object of class "power.htest", a list of the arguments (including the computed one) augmented 
-with method and note elements.
+with method and note elements. Sample size is returned as \code{r1} and \code{r2}. r1 is number of exposed 
+subjects and r2 is number of unexposed subjects. r2 is equal to r1 * rho.
 }
 \description{
 Compute the power of risk difference, risk ratio and odds ratio methods for closed cohort studies, 

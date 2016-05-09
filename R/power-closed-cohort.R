@@ -19,7 +19,8 @@
 #' 
 #'
 #' @return Object of class "power.htest", a list of the arguments (including the computed one) augmented 
-#' with method and note elements.
+#' with method and note elements. Sample size is returned as \code{r1} and \code{r2}. r1 is number of exposed 
+#' subjects and r2 is number of unexposed subjects. r2 is equal to r1 * rho. 
 #' @export
 #'
 #' @references Newman (2001), pages 283 - 285
