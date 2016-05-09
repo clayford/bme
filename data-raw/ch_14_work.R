@@ -28,6 +28,56 @@ ss.closed.chort <- function(pi2, delta, sig.level = 0.05, power = 0.80, rho = 1,
 # Example 14.2
 ss.closed.chort(pi2 = 0.05, delta = c(0.01, 0.05, 0.10, 0.20, 0.30), power = 0.8, rho = 1)
 
+# or with power prop test
+# p1 = p2 + RD
+# rho = 1 (cannot be set with power.prop.test)
+sapply(0.05 + c(0.01, 0.05, 0.10, 0.20, 0.30), 
+       function(p1) power.prop.test(p1 = p1, p2 = 0.05, power = 0.8)$n)
+
+# Risk difference
+# p1 = p2 + RD
+power.prop.test(p1 = 0.05 + 0.01, p2 = 0.05, power = 0.8)
+p.out <- power.prop.test(p1 = 0.05 + 0.01, p2 = 0.05, power = 0.8)
+# Risk Ratio
+# p1 = RR * p2
+power.prop.test(p1 = 1.2 * 0.01, p2 = 0.05, power = 0.8)
+# Odds Ratio
+# p1 = (OR * p2) / (OR * p2 + (1 - p2))
+power.prop.test(p1 = (1.2 * 0.01) / ((1.2 * 0.01) + 1 - 0.01), p2 = 0.05, power = 0.8)
+
+power.closed.cohort <- function(delta, type=c("RD","RR","OR"), n = NULL, p2 = NULL, 
+                                sig.level = 0.05, power = NULL, 
+                                alternative = c("two.sided", "one.sided"),
+                                strict = FALSE, tol = .Machine$double.eps^0.25)
+  {
+  type <- match.arg(type)
+  if(type=="RD"){
+    p.out <- power.prop.test(p1 = delta + p2, p2 = p2, n=n, power=power, alternative = alternative, 
+                    sig.level = sig.level, strict = strict, tol = tol)
+    p.out$note <- "n is number of exposed subjects needed for study \np1 = p2 + RD"
+    
+  } else if(type=="RR"){
+    p.out <- power.prop.test(p1 = delta * p2, p2 = p2, n=n, power=power, alternative = alternative, 
+                    sig.level = sig.level, strict = strict, tol = tol)
+    p.out$note <- "n is number of exposed subjects needed for study \np1 = p2 * RR"
+    
+  } else {
+    p1 = (delta * p2) / (delta * p2 + (1 - p2))
+    p.out <- power.prop.test(p1 = p1, p2 = p2, n=n, power=power, alternative = alternative, 
+                    sig.level = sig.level, strict = strict, tol = tol)
+    p.out$note <- "n is number of exposed subjects needed for study \np1 = (OR * p2) / (OR * p2 + (1 - p2))"
+  }
+  p.out$method <- paste(switch(type, RD = "Risk Difference", RR = "Risk Ratio", OR = "Odds Ratio"), 
+                 "closed cohort Power Calculation")
+  p.out
+}
+
+power.closed.cohort(delta = 0.01, type = "RD", p2 = 0.05, power = 0.80)
+power.closed.cohort(delta = 0.01, type = "RR", p2 = 0.05, power = 0.80)
+power.closed.cohort(delta = 0.01, type = "OR", p2 = 0.05, power = 0.80)
+
+power.closed.cohort(delta = 0.01, type = "OR", p2 = 0.05, n = 100)
+
 # Example 14.3
 ss.closed.chort(pi2 = 0.05, delta = 0.05, power = 0.8, rho = c(1:5,10,20))
 
@@ -38,6 +88,78 @@ ss.closed.chort(pi2 = 0.05, delta = 0.05, power = 0.8, rho = 1, type = "RR")
 # Odds Ratio
 ss.closed.chort(pi2 = 0.05, delta = 0.05, power = 0.8, rho = 1, type = "OR")
 
+
+# solving for power
+
+
+if(type == "RD") pi1 <- pi2 + delta
+# else if(type == "RR") pi1 <- pi2*delta
+# else pi1 <- delta*pi2 / (delta*pi2 + (1 - pi2))
+pi0 <- (pi1 + (pi2 * rho)) / (1 + rho)
+
+sig.level <- 0.05
+rho <- 1
+delta <- 0.01
+p2 <- 0.05
+p1 <- p2 + delta
+p0 <- (p1 + (p2 * rho)) / (1 + rho)
+n <- 8158
+p.body <- quote({
+  pnorm((abs(delta) * sqrt(n) - (qnorm(1 - (sig.level/2)) * sqrt(p0 * (1 - p0) * ((1 + rho)/rho)))) / 
+          sqrt(p1 * (1 - p1) + ((p2 * (1 - p2))/rho)))
+})
+eval(p.body)
+
+power.closed.cohort <- function(n = NULL, delta, p2, rho = 1,
+                                sig.level = 0.05, power = NULL, 
+                                type = c("RD","RR","OR"),
+                                alternative = c("two.sided", "one.sided"),  
+                                tol = .Machine$double.eps^0.25)
+  {
+  if (sum(sapply(list(n, power), is.null)) != 
+      1) 
+    stop("exactly one of 'n' and 'power' must be NULL")
+  if (!is.null(sig.level) && !is.numeric(sig.level) || 
+      any(0 > sig.level | sig.level > 1)) 
+    stop("'sig.level' must be numeric in [0, 1]")
+  alternative <- match.arg(alternative)
+  tside <- switch(alternative, one.sided = 1, two.sided = 2)
+  type <- match.arg(type)
+  if(type == "RD") p1 <- p2 + delta
+  else if(type == "RR") p1 <- p2 * delta
+  else p1 <- delta*p2 / (delta*p2 + (1 - p2))
+  p0 <- (p1 + (p2 * rho)) / (1 + rho)
+  p.body <- quote({
+    pnorm((abs(delta) * sqrt(n) - (qnorm(sig.level/tside, lower.tail = FALSE)) * 
+             sqrt(p0 * (1 - p0) * ((1 + rho)/rho))) / 
+            sqrt(p1 * (1 - p1) + ((p2 * (1 - p2))/rho)))
+  })
+  if (is.null(power)) 
+    power <- eval(p.body)
+  else if (is.null(n)) 
+    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+                 tol = tol, extendInt = "upX")$root
+  NOTE <- "r1 is number of exposed subjects; r2 is number of unexposed subjects"  
+  METHOD <- paste(switch(type, RD = "Risk Difference", RR = "Risk Ratio", OR = "Odds Ratio"), 
+                  "power calculation")
+  structure(list(r1 = round(n), r2 = round(n) * rho, type = type, delta = delta,
+                 p1 = p1, p2 = p2, sig.level = sig.level, 
+                 power = power, alternative = alternative, note = NOTE, 
+                 method = METHOD), class = "power.htest")
+}
+
+power.closed.cohort(n = 8158, delta = 0.01, p2 = 0.05)
+power.closed.cohort(delta = 0.05, p2 = 0.05, rho = 2, power = 0.80)
+power.closed.cohort(delta = 0.05, p2 = 0.05, rho = 10, power = 0.80)
+
+p.out <- power.closed.cohort(delta = 0.05, p2 = 0.05, rho = 2, power = 0.80, type = "RR")
+
+
+p.out <- lapply(c(1:5,10,20), function(x)power.closed.cohort(delta = 0.05, rho = x, power = 0.8, p2 = 0.05))
+sapply(
+  lapply(c(1:5,10,20), 
+         function(x)power.closed.cohort(delta = 0.05, rho = x, power = 0.8, p2 = 0.05)), 
+  function(x)x[1:2])
 
 
 # 14.6 --------------------------------------------------------------------
