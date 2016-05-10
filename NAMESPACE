@@ -2,4 +2,6 @@
 
 export(mdlt)
 export(power.closed.cohort)
+export(power.hr.test)
+export(power.mpcc)
 export(power.smr.test)

@@ -163,7 +163,6 @@ sapply(
 
 
 
-
 # 14.3 --------------------------------------------------------------------
 # sample size for for an open cohort study
 # standardized mortality ratio
@@ -213,6 +212,124 @@ power.smr.test <- function(n = NULL, smr, r, sig.level = 0.05, power = NULL,
                  method = METHOD), class = "power.htest")
 }
 power.smr.test(smr = 1.5, r = 7283/957247, power = 0.8)
+
+
+# Hazard Ratio
+
+p1 <- 0.251
+p2 <- 1 - p1
+HR <- 2
+pi2 <- 0.174 # P(member of unexposed cohort will die during follow-up)
+n <- 414
+pnorm(sqrt((p1*p2*log(HR)^2) * (p1 * (1 - (1 - pi2)^HR) + p2*pi2) * n) - qnorm(0.975))
+
+
+
+power.hr.test <- function(n = NULL, hr, p1, pi2, sig.level = 0.05, power = NULL,
+                           alternative = c("two.sided", "one.sided"),  
+                           tol = .Machine$double.eps^0.25){
+  if (sum(sapply(list(n, power), is.null)) != 
+      1) 
+    stop("exactly one of 'n' and 'power' must be NULL")
+  if (!is.null(sig.level) && !is.numeric(sig.level) || 
+      any(0 > sig.level | sig.level > 1)) 
+    stop("'sig.level' must be numeric in [0, 1]")
+  alternative <- match.arg(alternative)
+  tside <- switch(alternative, one.sided = 1, two.sided = 2)
+  p2 <- 1 - p1
+  p.body <- quote({
+    pnorm(sqrt((p1*p2*log(HR)^2) * (p1 * (1 - (1 - pi2)^HR) + p2*pi2) * n) - 
+            qnorm(sig.level/tside, lower.tail = FALSE))
+  })
+  if (is.null(power)) 
+    power <- eval(p.body)
+  else if (is.null(n)) 
+    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+                 tol = tol, extendInt = "upX")$root
+  NOTE <- "n is the number of subjects needed for the study;\n      m is the number of deaths needed for the study"  
+  METHOD <- "Hazard Ratio Test power calculation"
+  structure(list(n = n, hr = hr, 
+                 m = (qnorm(sig.level/tside, lower.tail = FALSE) + qnorm(power))^2 /(p1*p2*log(HR)^2),
+                 sig.level = sig.level, 
+                 power = power, alternative = alternative, note = NOTE, 
+                 method = METHOD), class = "power.htest")
+}
+
+power.hr.test(hr = 2, p1 = 0.251, pi2 = 0.174, power = 0.8)
+power.hr.test(n = 414, hr = 2, p1 = 0.251, pi2 = 0.174)
+
+
+
+# 14.4 --------------------------------------------------------------------
+
+
+# matched-pairs case-control study
+OR <- 3
+p2 <- 0.05 # p(control has history of exposure)
+v <- 4.82
+n <- 224
+p1 <- OR*p2 /(OR*p2 + (1 - p2))
+p0 <- p2*(1 - p2)*(OR +1) / (OR*p2+ (1 - p2))
+num <- 2*(v - 1)*p1*(1 - p1)
+den <- sqrt(1 + 4*(v - 1)*p1*(1-p1)) - 1
+
+pnorm((sqrt(p0 * n * (den/num) * (OR - 1)^2) - qnorm(0.975)*(OR+1)) / (2 * sqrt(OR)))
+
+
+# power
+p.body <- quote({
+  p1 <- OR*p2 /(OR*p2 + (1 - p2))
+  p0 <- p2*(1 - p2)*(OR +1) / (OR*p2+ (1 - p2))
+  num <- 2*(v - 1)*p1*(1 - p1)
+  den <- sqrt(1 + 4*(v - 1)*p1*(1-p1)) - 1
+  pnorm((sqrt(p0 * n * (den/num) * (OR - 1)^2) - qnorm(0.975)*(OR+1)) / (2 * sqrt(OR)))
+})
+eval(p.body)
+# sample size
+power <- 0.8
+uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+        tol = .Machine$double.eps^0.25, extendInt = "upX")$root
+
+
+power.mpcc <- function(n = NULL, OR, p2, v, sig.level = 0.05, power = NULL, M = 1,
+                       alternative = c("two.sided", "one.sided"),  
+                       tol = .Machine$double.eps^0.25){
+  if (sum(sapply(list(n, power), is.null)) != 
+      1) 
+    stop("exactly one of 'n' and 'power' must be NULL")
+  if (!is.null(sig.level) && !is.numeric(sig.level) || 
+      any(0 > sig.level | sig.level > 1)) 
+    stop("'sig.level' must be numeric in [0, 1]")
+  alternative <- match.arg(alternative)
+  tside <- switch(alternative, one.sided = 1, two.sided = 2)
+  p.body <- quote({
+    p1 <- OR*p2 /(OR*p2 + (1 - p2))
+    p0 <- p2*(1 - p2)*(OR +1) / (OR*p2+ (1 - p2))
+    num <- 2*(v - 1)*p1*(1 - p1)
+    den <- sqrt(1 + 4*(v - 1)*p1*(1-p1)) - 1
+    pnorm((sqrt(p0 * n * ((M+1)/2*M) * (den/num) * (OR - 1)^2) - 
+             qnorm(sig.level/tside, lower.tail = FALSE)*(OR+1)) / (2 * sqrt(OR)))
+  })
+  if (is.null(power)) 
+    power <- eval(p.body)
+  else if (is.null(n)) 
+    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+                 tol = tol, extendInt = "upX")$root
+    NOTE <- "n is the number of matched pairs needed for the study;\n      r is the number of discordant pairs needed for the study"  
+  METHOD <- "Matched Pairs Case Control power calculation"
+  structure(list(n = n,  
+                 r = (qnorm(sig.level/tside, lower.tail = FALSE)*(OR + 1) + 2*qnorm(power)*sqrt(OR))^2 /(OR - 1)^2,
+                 v = v, OR = OR, M = M, sig.level = sig.level, 
+                 power = power, alternative = alternative, note = NOTE, 
+                 method = METHOD), class = "power.htest")
+}
+# Example 14.6
+power.mpcc(n = 224, OR = 3, p2 = 0.05, v = 4.82)
+power.mpcc(n = 224, OR = 3, p2 = 0.05, v = 4.82, M = 2)
+power.mpcc(power = 0.80, OR = 3, p2 = 0.05, v = 4.82)
+power.mpcc(power = 0.80, OR = 3, p2 = 0.05, v = 4.82, M = 3)
+power.mpcc(power = 0.80, OR = 3, p2 = 0.05, v = 2.5)
+power.mpcc(power = 0.80, OR = 3, p2 = 0.05, v = 2.5, alternative = "one")
 
 
 # 14.6 --------------------------------------------------------------------
