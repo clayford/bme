@@ -26,5 +26,27 @@ Table 5.3, page 126 (\code{\link{breast.receptor}});
 Table 5.10, page 140 (\code{\link{breast.stage}}); 
 Table 9.1, page 175 (\code{\link{breast.survival}})
 }
+\examples{
+## Convert to data frame for logistic regression, Example 15.1
+
+dat <- data.frame(t(as.data.frame(breast.stage)))
+nms <- strsplit(row.names(dat),split = "\\\\.")
+row.names(dat) <- NULL
+dat$receptor.level <- factor(sapply(nms, function(x)x[1]), levels = c("high","low"))
+dat$stage <- factor(sapply(nms, function(x)x[2]))
+rm(nms)
+
+## Fit model (15.5, page 300)
+m1 <- glm(cbind(dead,alive)  ~ receptor.level + stage, data=dat, family = binomial)
+summary(m1)
+exp(confint(m1)) # confidence intervals
+
+## to get confidence intervals presented in Table 15.3
+exp(coef(m1) + t(matrix(c(-1,1),nrow=2) \%*\% (qnorm(0.975) * summary(m1)$coefficients[,2])))
+
+## predicted probability of death during 5-year period follow-up 
+## for patient with receptor.level="low" and stage="II"
+predict(m1, newdata = data.frame(receptor.level="low", stage="II"), type = "response")
+}
 \keyword{datasets}
 

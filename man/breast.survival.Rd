@@ -28,5 +28,16 @@ Table 5.3, page 126 (\code{\link{breast.receptor}});
 Table 5.10, page 140 (\code{\link{breast.stage}}); 
 Table 9.1, page 175 (\code{\link{breast.survival}})
 }
+\examples{
+## Cox regression, Example 15.2
+
+## Set "high" as reference level
+breast.survival$receptor.level <- relevel(breast.survival$receptor.level, ref = "high")
+library(survival)
+fit <- coxph(Surv(time, status) ~ receptor.level + stage, data = breast.survival) 
+
+## Table 15.8
+summary(fit)
+}
 \keyword{datasets}
 

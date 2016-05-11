@@ -70,6 +70,27 @@
 #'  \item{stage}{stage of disease: I, II, III}
 #' }
 #' @source Newman (2001)
+#' @examples 
+#' ## Convert to data frame for logistic regression, Example 15.1
+#' 
+#' dat <- data.frame(t(as.data.frame(breast.stage)))
+#' nms <- strsplit(row.names(dat),split = "\\.")
+#' row.names(dat) <- NULL
+#' dat$receptor.level <- factor(sapply(nms, function(x)x[1]), levels = c("high","low"))
+#' dat$stage <- factor(sapply(nms, function(x)x[2]))
+#' rm(nms)
+#' 
+#' ## Fit model (15.5, page 300)
+#' m1 <- glm(cbind(dead,alive)  ~ receptor.level + stage, data=dat, family = binomial)
+#' summary(m1)
+#' exp(confint(m1)) # confidence intervals
+#' 
+#' ## to get confidence intervals presented in Table 15.3
+#' exp(coef(m1) + t(matrix(c(-1,1),nrow=2) %*% (qnorm(0.975) * summary(m1)$coefficients[,2])))
+#' 
+#' ## predicted probability of death during 5-year period follow-up 
+#' ## for patient with receptor.level="low" and stage="II"
+#' predict(m1, newdata = data.frame(receptor.level="low", stage="II"), type = "response")
 "breast.stage"
 
 #' Breast cancer survival data (data frame)
@@ -92,6 +113,16 @@
 #'  \item{receptor.level}{amount of estrogen receptor that is present in breast tissue: low, high}
 #' }
 #' @source Newman (2001)
+#' @examples
+#' ## Cox regression, Example 15.2
+#' 
+#' ## Set "high" as reference level
+#' breast.survival$receptor.level <- relevel(breast.survival$receptor.level, ref = "high")
+#' library(survival)
+#' fit <- coxph(Surv(time, status) ~ receptor.level + stage, data = breast.survival) 
+#' 
+#' ## Table 15.8
+#' summary(fit)
 "breast.survival"
 
 #' Ovarian cancer data
