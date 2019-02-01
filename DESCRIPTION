@@ -2,13 +2,10 @@ Package: bme
 Title: Biostatistical Methods in Epidemiology
 Version: 0.1
 Authors@R: person("Clay", "Ford", email = "joe.clayton.ford@gmail.com", role = c("aut", "cre"))
-Description: Data and functions for the book Biostatistical Methods in Epidemiology 
-    by Stephen Newman (2001, Wiley)
-Depends:
-    R (>= 3.2.4)
-Imports:
-    epitools, flexsurv, epiR
+Description: Data and functions for the book Biostatistical Methods in Epidemiology by Stephen Newman (2001, Wiley)
+Depends: R (>= 3.2.4)
+Imports: epitools, flexsurv, epiR
 License: CC0
 URL: https://github.com/clayford/bme
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
