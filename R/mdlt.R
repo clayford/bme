@@ -25,6 +25,7 @@
 #' }
 #' @export
 #' @seealso \code{\link{olt}} and \code{\link{cdlt}}
+#' @export
 #' @references Newman (2001), pages 270-273.
 #' @examples
 #' ## Example 13.3

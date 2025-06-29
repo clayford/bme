@@ -4,8 +4,13 @@
 \alias{linear.trend.test}
 \title{Test for linear trend (in log-hazard ratios)}
 \usage{
-linear.trend.test(time, status, exposure, strata,
-  scores = seq_along(length(levels(strata))))
+linear.trend.test(
+  time,
+  status,
+  exposure,
+  strata,
+  scores = seq_along(length(levels(strata)))
+)
 }
 \arguments{
 \item{time}{a numeric vector of survival times.}
@@ -18,7 +23,7 @@ first level is assumed to be the exposed condition.}
 
 \item{strata}{a factor vector with at least two levels indicating strata.}
 
-\item{score}{group score.}
+\item{scores}{group scores.}
 }
 \value{
 An object of class "htest" with title, test statistic, and p-value.
@@ -37,4 +42,3 @@ with(breast.survival, linear.trend.test(time, status, receptor.level, stage,
 \references{
 Newman (2001), page 221.
 }
-

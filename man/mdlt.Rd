@@ -60,4 +60,3 @@ Newman (2001), pages 270-273.
 \seealso{
 \code{\link{olt}} and \code{\link{cdlt}}
 }
-

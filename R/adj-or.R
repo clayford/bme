@@ -14,6 +14,7 @@
 #'    \item{Adjusted odds ratio}{Adjusted odds ratio after accounting for misclassification} 
 #'    \item{Estimated odds ratio}{Estimated odds ratio based on (possibly) misclassified data} 
 #'   }
+#' @export
 #' @references Newman (2001), pages 72-75, 99.
 #' @examples 
 #' ## Example 4.2

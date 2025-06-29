@@ -15,6 +15,7 @@
 #' @param method method for calculating hazard ratio and confidence interval.
 #'   Choices are "wald" (default) and "midp".
 #' @return  A list containing a hazard ratio estimate and confidence interval for each stratum.
+#' @export
 #' @references Newman (2001), page 208.
 #' @examples 
 #' ## Table 10.15 from Example 10.14

@@ -25,6 +25,7 @@
 #'   \item{data.name}{A character string giving the name of the data.} }
 #' @seealso \code{\link{hazard.ratio.test}} for unstratified survival data and \code{\link{hazard.ratios}} 
 #' for calculating estimated hazard ratios of stratified survival data.
+#' @export
 #' @references Newman (2001), page 219 - 221, 226.
 #' @examples 
 #' ## Example 10.14
@@ -60,7 +61,7 @@ k.hazard.ratio.test <- function(time, status, exposure, strata,
     f1 <- function(x){
       sum((x*mk*nk[1,])/(x*nk[1,] + nk[2,])) - sum(dk[1,])
     }
-    est <- uniroot(f = f1, interval = c(0,1e5))$root
+    est <- stats::uniroot(f = f1, interval = c(0,1e5))$root
     names(est) <- "common hazard ratio"
     null <- 1
     names(null) <- names(est)
@@ -74,7 +75,7 @@ k.hazard.ratio.test <- function(time, status, exposure, strata,
     # confidence interval
     V <- sum((1/dh1 + 1/dh2)^(-1))
     alpha <- (1-conf.level)/2
-    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)/sqrt(V))
+    CINT <- exp(log(est) + c(-1,1)*stats::qnorm(1 - alpha)/sqrt(V))
     attr(CINT, "conf.level") <- conf.level
     
     # tests of association
@@ -83,7 +84,7 @@ k.hazard.ratio.test <- function(time, status, exposure, strata,
     if(Wald){
       V0 <- sum((nk[1,]*nk[2,]*mk)/(n^2))
       STATISTIC <- log(est)^2 * V0
-      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+      p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
       
     } else {
       # LRT of association
@@ -91,7 +92,7 @@ k.hazard.ratio.test <- function(time, status, exposure, strata,
       e1 <- nk[1,]*mk/n
       e2 <- nk[2,]*mk/n
       STATISTIC <- 2 * sum(dk[1,] * log((dk[1,]/e1)) + dk[2,] * log((dk[2,]/e2)))
-      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+      p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
     }
     names(STATISTIC) <- "X-squared"
     METHOD <- paste(if(Wald) "Wald" else "Likelihood Ratio", "Test of association")
@@ -114,7 +115,7 @@ k.hazard.ratio.test <- function(time, status, exposure, strata,
     STATISTIC <- sum(((di. - ei.)^2)/ei.)
     df <- nrow(dik) - 1
     names(df) <- "df"
-    p.value <- pchisq(STATISTIC, df = df, lower.tail = FALSE)
+    p.value <- stats::pchisq(STATISTIC, df = df, lower.tail = FALSE)
     names(STATISTIC) <- "X-squared"
     METHOD <- ("X-squared Test of association - polychotomous exposure")
     RVAL <- list(statistic = STATISTIC, parameter = df, p.value = p.value, 

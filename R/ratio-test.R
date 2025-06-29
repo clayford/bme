@@ -11,8 +11,6 @@
 #'   Test. Default is TRUE.
 #' @param conf.level confidence level of the returned confidence 
 #'   interval. Must be a single number between 0 and 1. Default is 0.95.
-#' @param rev a logical indicating to whether to reverse the order of the factor
-#'   levels when estimating the hazard ratio.
 #' @param exact a logical indicating whether the asymptotic (unconditional) test
 #'   or the exact test should be computed. Default is FALSE. The \code{"Wald"}
 #'   argument is ignored when set to TRUE.
@@ -27,6 +25,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{A character string giving the name of the data.} 
 #'   }
+#' @export   
 #' @references Newman (2001), page 206 - 213.
 #' @examples 
 #' ## Example 10.8
@@ -48,7 +47,7 @@ hazard.ratio.test <- function(time, status, exposure, Wald=TRUE, conf.level=0.95
   alternative <- "two.sided"
   n <- tapply(time, exposure, sum)
   d <- tapply(status, exposure, sum)
-  if(d[1] == 0 || d[2] == 0) est <- (d[1] + 0.5) * n2 / (d[2]  + 0.5) * n[1]
+  if(d[1] == 0 || d[2] == 0) est <- (d[1] + 0.5) * n[2] / (d[2]  + 0.5) * n[1]
   else est <- (d[1] * n[2]) / (d[2] * n[1])
   names(est) <- "hazard ratio"
   null <- 1
@@ -58,7 +57,7 @@ hazard.ratio.test <- function(time, status, exposure, Wald=TRUE, conf.level=0.95
   if(!exact){
     # hazard ratio
     # HR conf interval
-    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)*sqrt((1/d[1]) + (1/d[2])))
+    CINT <- exp(log(est) + c(-1,1)*stats::qnorm(1 - alpha)*sqrt((1/d[1]) + (1/d[2])))
     attr(CINT, "conf.level") <- conf.level
     
     # Wald and LRT tests of association
@@ -69,11 +68,11 @@ hazard.ratio.test <- function(time, status, exposure, Wald=TRUE, conf.level=0.95
     # Wald test
     if(Wald){
       STATISTIC <- (log(est)^2 * n[1] * n[2] * m)/((n[1] + n[2])^2)
-      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)  
+      p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)  
     } else {
       # LRT
       STATISTIC <- 2*(d[1] * log(d[1]/e1) + d[2] * log(d[2]/e2))
-      p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+      p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
     }
     names(STATISTIC) <- "X-squared"
     METHOD <- paste(if(Wald) "Wald" else "Likelihood Ratio", "Test of association")
@@ -83,10 +82,10 @@ hazard.ratio.test <- function(time, status, exposure, Wald=TRUE, conf.level=0.95
                  data.name = dname)  
   } else {
     m <- sum(d)
-    f1 <- function(x)1 - pbinom(d[1]-1, size = m, prob = x) - alpha
-    f2 <- function(x)pbinom(d[1], size = m, prob = x) - alpha
-    f1.out <- uniroot(f1, interval = c(0,1))
-    f2.out <- uniroot(f2, interval = c(0,1))
+    f1 <- function(x)1 - stats::pbinom(d[1]-1, size = m, prob = x) - alpha
+    f2 <- function(x)stats::pbinom(d[1], size = m, prob = x) - alpha
+    f1.out <- stats::uniroot(f1, interval = c(0,1))
+    f2.out <- stats::uniroot(f2, interval = c(0,1))
     CINTpi <- c(f1.out$root, f2.out$root)
     CINT <- CINTpi*n[2]/((1 - CINTpi)*n[1]) # HR CI
     attr(CINT, "conf.level") <- conf.level
@@ -94,8 +93,8 @@ hazard.ratio.test <- function(time, status, exposure, Wald=TRUE, conf.level=0.95
     # test
     # exact test of association
     pi_0 <- (null * n[1]) / (null * n[1] + n[2])
-    p.value <- min( min(pbinom(q = d[1], size = m, prob = pi_0), 
-                        1 - pbinom(q = d[1]-1, size = m, prob = pi_0)) * 2, 1)
+    p.value <- min( min(stats::pbinom(q = d[1], size = m, prob = pi_0), 
+                        1 - stats::pbinom(q = d[1]-1, size = m, prob = pi_0)) * 2, 1)
     RVAL <- list(p.value = p.value, estimate = est, null.value = null,
                  conf.int = CINT, alternative = alternative,
                  method = "Exact Hazard Ratio Test of Association", 

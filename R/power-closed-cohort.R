@@ -70,14 +70,14 @@ power.closed.cohort <- function(n = NULL, delta, p2, rho = 1,
   else p1 <- delta*p2 / (delta*p2 + (1 - p2))
   p0 <- (p1 + (p2 * rho)) / (1 + rho)
   p.body <- quote({
-    pnorm((abs(p1 - p2) * sqrt(n) - (qnorm(sig.level/tside, lower.tail = FALSE)) * 
+    stats::pnorm((abs(p1 - p2) * sqrt(n) - (stats::qnorm(sig.level/tside, lower.tail = FALSE)) * 
              sqrt(p0 * (1 - p0) * ((1 + rho)/rho))) / 
             sqrt(p1 * (1 - p1) + ((p2 * (1 - p2))/rho)))
   })
   if (is.null(power)) 
     power <- eval(p.body)
   else if (is.null(n)) 
-    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+    n <- stats::uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
                  tol = tol, extendInt = "upX")$root
   NOTE <- "r1 is number of exposed subjects; r2 is number of unexposed subjects"  
   METHOD <- paste(switch(type, RD = "Risk Difference", RR = "Risk Ratio", OR = "Odds Ratio"), 

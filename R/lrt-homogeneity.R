@@ -22,6 +22,7 @@
 #'   first level is assumed to be the exposed condition.
 #' @param strata a factor vector with at least two levels indicating strata.
 #' @return An object of class "htest" with title, test statistic, and p-value.
+#' @export
 #' @references Newman (2001), page 221.
 #' @examples 
 #' ## Example 10.14
@@ -37,7 +38,7 @@ lrt.homogeneity <- function(time, status, exposure, strata){
   f1 <- function(x){
     sum((x*mk*nk[1,])/(x*nk[1,] + nk[2,])) - sum(dk[1,])
   }
-  est <- uniroot(f = f1, interval = c(0,1e5))$root
+  est <- stats::uniroot(f = f1, interval = c(0,1e5))$root
   hr2 <- mk/(est*nk[1,] + nk[2,])
   hr1 <- est*hr2
   # fitted counts:
@@ -47,7 +48,7 @@ lrt.homogeneity <- function(time, status, exposure, strata){
   STATISTIC <- 2 * sum(dk[1,] * log((dk[1,]/dh1)) + dk[2,] * log((dk[2,]/dh2)))
   df <- ncol(dk) - 1
   names(df) <- "df"
-  p.value <- pchisq(STATISTIC, df = df, lower.tail = FALSE)
+  p.value <- stats::pchisq(STATISTIC, df = df, lower.tail = FALSE)
   names(STATISTIC) <- "X-squared"
   METHOD <- paste("Likelihood ratio test of homogeneity")
   RVAL <- list(statistic = STATISTIC, parameter = df, p.value = p.value,

@@ -46,4 +46,3 @@ with(breast.survival, exact.rate.test(time = time, status = status, null = 0.01)
 \references{
 Newman (2001), page 203-4.
 }
-

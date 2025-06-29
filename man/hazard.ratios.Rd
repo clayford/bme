@@ -41,4 +41,3 @@ with(breast.survival, hazard.ratios(time, status, receptor.level, stage, method=
 \references{
 Newman (2001), page 208.
 }
-

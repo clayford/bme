@@ -34,4 +34,3 @@ adjusted.odds.ratio(data = breast, sensitivity = 0.9, specificity = 0.99)
 \references{
 Newman (2001), pages 72-75, 99.
 }
-

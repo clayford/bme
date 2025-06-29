@@ -23,6 +23,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{A character string giving the name of the data.} 
 #'   }
+#' @export
 #' @references Newman (2001), page 197.
 #' @examples 
 #' ## Example 10.1
@@ -33,9 +34,10 @@
 #' ## exponential survival curve and the Kaplan-Meier curve and deciding subjectively
 #' ## whether the latter appears to be exponential in appearance.
 #' ## Fig 10.2(a), p. 198
-#' require(flexsurv)
+#' if(require(flexsurv)){
 #' fit.exp <- flexsurvreg(formula = Surv(time, status) ~ 1, data = breast.survival, dist="exp")
 #' plot(fit.exp, ci=FALSE)
+#' }
 cox.oakes <- function(time,status) {
   dname <- deparse(substitute(time))
   d <- sum(status) # number of deaths in cohort
@@ -48,7 +50,7 @@ cox.oakes <- function(time,status) {
   num <- (d + sum(si * (status - ei.hat)))^2
   denom <- d + sum((si^2)*ei.hat) - (sum(si*ei.hat))^2 / d
   X.co <- num/denom
-  p.value <- pchisq(X.co, df = 1, lower.tail = FALSE)
+  p.value <- stats::pchisq(X.co, df = 1, lower.tail = FALSE)
   RVAL <- list(statistic = c(statistic = X.co), p.value = p.value,
                estimate = lam0.hat,
                method = "Cox-Oakes Test of Exponentiality", 

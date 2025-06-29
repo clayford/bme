@@ -4,7 +4,8 @@
 \name{males}
 \alias{males}
 \title{Male death and census counts, Canada, 1991}
-\format{data frame with 19 rows and 6 variables
+\format{
+data frame with 19 rows and 6 variables
 \describe{
 \item{age.group}{the age group}
 \item{deaths.all}{number of deaths - all causes}
@@ -12,7 +13,8 @@
 \item{circ.deaths}{number of deaths - ciculatory disease}
 \item{injury.deaths}{number of deaths - injury}
 \item{pop}{census population for age group}
-}}
+}
+}
 \source{
 Newman (2001), Table 13.3
 }
@@ -24,4 +26,3 @@ Data on the number of deaths from all causes, neoplasms, circulatory disease, an
 the census population for Canadian males in 1991.
 }
 \keyword{datasets}
-

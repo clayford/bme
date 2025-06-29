@@ -4,13 +4,15 @@
 \name{breast.survival}
 \alias{breast.survival}
 \title{Breast cancer survival data (data frame)}
-\format{data frame with 199 observations and 4 variables:
+\format{
+data frame with 199 observations and 4 variables:
 \describe{
  \item{time}{survival time in months}
  \item{status}{censoring variable; 0 = censored; 1 = died of breast cancer}
  \item{stage}{stage of disease: I, II, III}
  \item{receptor.level}{amount of estrogen receptor that is present in breast tissue: low, high}
-}}
+}
+}
 \source{
 Newman (2001)
 }
@@ -33,11 +35,12 @@ Table 9.1, page 175 (\code{\link{breast.survival}})
 
 ## Set "high" as reference level
 breast.survival$receptor.level <- relevel(breast.survival$receptor.level, ref = "high")
-library(survival)
+if(require(survival)){
 fit <- coxph(Surv(time, status) ~ receptor.level + stage, data = breast.survival) 
 
 ## Table 15.8
 summary(fit)
+detach(package:survival)
+}
 }
 \keyword{datasets}
-

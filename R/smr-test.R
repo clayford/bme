@@ -24,6 +24,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{Character strings giving the name of the data.} 
 #'   }
+#' @export
 #' @references Newman (2001), page 255-258.
 #' @seealso \code{\link[epitools]{ageadjust.indirect}} in the \code{epitools} package.
 #'
@@ -77,10 +78,10 @@ smr.test <- function(count, pop, stdcount, stdpop, conf.level = 0.95){
     varSMR <- est/Ea
     # 95% CI
     alpha <- (1-conf.level)/2
-    CINT <- est + c(-1,1)*qnorm(1 - alpha)*sqrt(varSMR)
+    CINT <- est + c(-1,1)*stats::qnorm(1 - alpha)*sqrt(varSMR)
     attr(CINT, "conf.level") <- conf.level
     STATISTIC <- ((Da - Ea)^2)/Ea
-    p.value <- pchisq(q = STATISTIC, df = 1, lower.tail = FALSE)
+    p.value <- stats::pchisq(q = STATISTIC, df = 1, lower.tail = FALSE)
     names(STATISTIC) <- "X-squared"
     METHOD <- paste("Test of no mortality difference between cohort and standard population")
     RVAL <- list(statistic = STATISTIC, parameter = c(df = 1), p.value = p.value, 

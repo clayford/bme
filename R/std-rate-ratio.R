@@ -17,6 +17,7 @@
 #' }
 #'
 #' @references Newman (2001), pages 251-255.
+#' @export
 #' @seealso \code{\link[epitools]{ageadjust.direct}} in the \code{epitools} package.
 #' @examples
 #' with(schizophrenia, 
@@ -57,7 +58,7 @@ std.rate.ratio <- function(count, pop, stdcount, stdpop, conf.level=0.95){
   
   # 95 CI for SRR
   alpha <- (1 - conf.level)/2
-  CINT <- exp(log(SRR) + c(-1,1) * qnorm(1 - alpha) * sqrt(varlogSRR))
+  CINT <- exp(log(SRR) + c(-1,1) * stats::qnorm(1 - alpha) * sqrt(varlogSRR))
   list("Standardized rate ratio" = SRR, "CI" = CINT,
        "Crude rate ratio" = CRR, 
        "directly standardized death rate" = Ras)

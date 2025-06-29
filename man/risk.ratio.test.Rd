@@ -40,6 +40,5 @@ risk.ratio.test(breast, Wald = FALSE)
 Newman (2001), pages 143-144.
 }
 \seealso{
-\code{\link{riskratio}} in the epitools package.
+\code{\link[epitools]{riskratio}} in the epitools package.
 }
-

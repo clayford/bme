@@ -4,11 +4,13 @@
 \name{oral.age}
 \alias{oral.age}
 \title{Oral contraceptive data, stratified by age group (2 x 2 x 3 array)}
-\format{2 x 2 x 3 array \describe{ 
+\format{
+2 x 2 x 3 array \describe{ 
  \item{disease (Myocardial infarction)}{case, control} 
  \item{OC (Oral Contraceptive)}{yes, no} 
  \item{age group}{25-34, 35-55, 45-49}
- }}
+ }
+}
 \source{
 Newman (2001), Table 11.5(a); Shapiro, et al. (1979) Oral-contraceptive use in relation to myocardial
 infarction. \emph{The Lancet} April 7, 743-746
@@ -21,4 +23,3 @@ Data from a case-control study investigating oral contraceptives as a risk
 factor for myocardial infarction, stratified by three age groups.
 }
 \keyword{datasets}
-

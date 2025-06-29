@@ -11,6 +11,5 @@
 #' @references Newman, Stephen C. (2001). Biostatistical Methods in Epidemiology. Wiley-Interscience.
 #' 
 #' @author Clay Ford - \email{joe.clayton.ford@@gmail.com}
-#' @docType package
 #' @name bme-package
-NULL
+"_PACKAGE"

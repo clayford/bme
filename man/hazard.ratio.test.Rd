@@ -4,8 +4,14 @@
 \alias{hazard.ratio.test}
 \title{Hazard Ratio Test of association for unstratified survival data}
 \usage{
-hazard.ratio.test(time, status, exposure, Wald = TRUE, conf.level = 0.95,
-  exact = FALSE)
+hazard.ratio.test(
+  time,
+  status,
+  exposure,
+  Wald = TRUE,
+  conf.level = 0.95,
+  exact = FALSE
+)
 }
 \arguments{
 \item{time}{a numeric vector of survival times.}
@@ -25,9 +31,6 @@ interval. Must be a single number between 0 and 1. Default is 0.95.}
 \item{exact}{a logical indicating whether the asymptotic (unconditional) test
 or the exact test should be computed. Default is FALSE. The \code{"Wald"}
 argument is ignored when set to TRUE.}
-
-\item{rev}{a logical indicating to whether to reverse the order of the factor
-levels when estimating the hazard ratio.}
 }
 \value{
 A list with class \code{"htest"} containing the following 
@@ -62,4 +65,3 @@ hazard.ratio.test(time = dat$time, status = dat$status, exposure = dat$receptor.
 \references{
 Newman (2001), page 206 - 213.
 }
-

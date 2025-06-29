@@ -4,8 +4,17 @@
 \alias{power.mpcc}
 \title{Power Calculation for Matched-Pairs Case-Control Odds Ratio Test}
 \usage{
-power.mpcc(n = NULL, OR, p2, v, sig.level = 0.05, power = NULL, M = 1,
-  alternative = c("two.sided", "one.sided"), tol = .Machine$double.eps^0.25)
+power.mpcc(
+  n = NULL,
+  OR,
+  p2,
+  v,
+  sig.level = 0.05,
+  power = NULL,
+  M = 1,
+  alternative = c("two.sided", "one.sided"),
+  tol = .Machine$double.eps^0.25
+)
 }
 \arguments{
 \item{n}{number of matched pairs needed for study}
@@ -55,4 +64,3 @@ Dupont, WD. (1988) Power calculations for matched case-control studies. \emph{Bi
 
 Fleiss, JL and Levin B. (1988) Sample size determination in studies with matched pairs. \emph{Journal of Clinical Epidemiology} 41, 727-730.
 }
-

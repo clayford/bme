@@ -19,6 +19,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{A character string giving the name of the data.} 
 #'   }
+#' @export 
 #' @references Newman (2001), pages 243 - 246.
 #' @seealso \code{\link[stats]{mcnemar.test}}
 #' @examples
@@ -41,11 +42,11 @@ mantelhaen.mpcc.test <- function(data, conf.level=0.95){
     names(null) <- names(est)
     alpha <- (1-conf.level)/2
     v <- 1/data[1,2] + 1/data[2,1]
-    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)*sqrt(v))
+    CINT <- exp(log(est) + c(-1,1)*stats::qnorm(1 - alpha)*sqrt(v))
     attr(CINT, "conf.level") <- conf.level
     # test of association
     STATISTIC <- ((data[1,2] - data[2,1])^2)/(data[1,2] + data[2,1])
-    p.value <- pchisq(q = STATISTIC, df = 1, lower.tail = FALSE)
+    p.value <- stats::pchisq(q = STATISTIC, df = 1, lower.tail = FALSE)
     
     names(STATISTIC) <- "X-squared"
     
@@ -66,7 +67,7 @@ mantelhaen.mpcc.test <- function(data, conf.level=0.95){
     var_log_OR_mh <- T/(2*R^2) + (U + V)/(2*R*S) + W/(2*S^2)
     
     # 95% CI
-    CINT <- exp(log(est) + c(-1,1)*qnorm(1 - alpha)*sqrt(var_log_OR_mh))
+    CINT <- exp(log(est) + c(-1,1)*stats::qnorm(1 - alpha)*sqrt(var_log_OR_mh))
     
     # MH test of association
     num <- (sum(data[1,(1:M)]) - 
@@ -74,7 +75,7 @@ mantelhaen.mpcc.test <- function(data, conf.level=0.95){
     
     den <- sum((data[1,(1:M)] + data[2,(2:(M+1))]) * seq(M) * (M + 1 - seq(M)) / (M + 1)^2)
     STATISTIC <- num/den
-    p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+    p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
     names(STATISTIC) <- "X-squared"
   }
   METHOD <- paste("Mantel-Haenszel Test of association for matched-pairs case-control")

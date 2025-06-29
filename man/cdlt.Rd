@@ -81,4 +81,3 @@ Newman (2001), pages 274-276.
 \seealso{
 \code{\link{olt}} and \code{\link{mdlt}}
 }
-

@@ -24,6 +24,7 @@
 #' }
 #' 
 #' @seealso \code{\link{olt}} and \code{\link{mdlt}}
+#' @export
 #' @references Newman (2001), pages 274-276.
 #' @examples
 #' ## Example 13.4

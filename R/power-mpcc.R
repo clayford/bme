@@ -53,18 +53,18 @@ power.mpcc <- function(n = NULL, OR, p2, v, sig.level = 0.05, power = NULL, M = 
     p0 <- p2*(1 - p2)*(OR +1) / (OR*p2+ (1 - p2))
     num <- 2*(v - 1)*p1*(1 - p1)
     den <- sqrt(1 + 4*(v - 1)*p1*(1-p1)) - 1
-    pnorm((sqrt(p0 * n * ((M+1)/2*M) * (den/num) * (OR - 1)^2) - 
-             qnorm(sig.level/tside, lower.tail = FALSE)*(OR+1)) / (2 * sqrt(OR)))
+    stats::pnorm((sqrt(p0 * n * ((M+1)/2*M) * (den/num) * (OR - 1)^2) - 
+             stats::qnorm(sig.level/tside, lower.tail = FALSE)*(OR+1)) / (2 * sqrt(OR)))
   })
   if (is.null(power)) 
     power <- eval(p.body)
   else if (is.null(n)) 
-    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+    n <- stats::uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
                  tol = tol, extendInt = "upX")$root
   NOTE <- "n is the number of matched pairs needed for the study;\n      r is the number of discordant pairs needed for the study"  
   METHOD <- "Matched Pairs Case Control power calculation"
   structure(list(n = n,  
-                 r = (qnorm(sig.level/tside, lower.tail = FALSE)*(OR + 1) + 2*qnorm(power)*sqrt(OR))^2 /(OR - 1)^2,
+                 r = (stats::qnorm(sig.level/tside, lower.tail = FALSE)*(OR + 1) + 2*stats::qnorm(power)*sqrt(OR))^2 /(OR - 1)^2,
                  v = v, OR = OR, M = M, sig.level = sig.level, 
                  power = power, alternative = alternative, note = NOTE, 
                  method = METHOD), class = "power.htest")

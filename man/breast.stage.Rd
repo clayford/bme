@@ -4,12 +4,14 @@
 \name{breast.stage}
 \alias{breast.stage}
 \title{Breast cancer data, stratified by disease stage (2 x 2 x 3 array)}
-\format{\code{breast} 2 x 2 x 3 array
+\format{
+\code{breast} 2 x 2 x 3 array
 \describe{
  \item{survival}{dead, alive}
  \item{receptor.level}{amount of estrogen receptor that is present in breast tissue: low, high}
  \item{stage}{stage of disease: I, II, III}
-}}
+}
+}
 \source{
 Newman (2001)
 }
@@ -49,4 +51,3 @@ exp(coef(m1) + t(matrix(c(-1,1),nrow=2) \%*\% (qnorm(0.975) * summary(m1)$coeffi
 predict(m1, newdata = data.frame(receptor.level="low", stage="II"), type = "response")
 }
 \keyword{datasets}
-

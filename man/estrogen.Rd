@@ -4,11 +4,13 @@
 \name{estrogen}
 \alias{estrogen}
 \title{Estrogen data (2 x 2 matrix)}
-\format{2 x 2 matrix
+\format{
+2 x 2 matrix
 \describe{
 \item{Case}{exposed, unexposed}
 \item{Control}{exposed, unexposed}
-}}
+}
+}
 \source{
 Newman (2001), Table 11.10; Antunes, et al. (1979) Endometrial cancer and estrogen use; 
 Report of a large case-control study. \emph{NEJM} 300, 9-13.
@@ -21,4 +23,3 @@ Data from a matched-pairs case-control study investigating estrogen use as a ris
 for endometrial cancer.
 }
 \keyword{datasets}
-

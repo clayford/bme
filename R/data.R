@@ -118,11 +118,13 @@
 #' 
 #' ## Set "high" as reference level
 #' breast.survival$receptor.level <- relevel(breast.survival$receptor.level, ref = "high")
-#' library(survival)
+#' if(require(survival)){
 #' fit <- coxph(Surv(time, status) ~ receptor.level + stage, data = breast.survival) 
 #' 
 #' ## Table 15.8
 #' summary(fit)
+#' detach(package:survival)
+#' }
 "breast.survival"
 
 #' Ovarian cancer data
@@ -238,7 +240,7 @@
 #' ## Fig 12.2(b)
 #' ag <- unclass(factor(colnames(females)))
 #' plot(ag, females[1,], type="b", ylim = c(0,50),
-#'      ylab = "Death Rate (per 100,000)", xlab="Age group", axes=F)
+#'      ylab = "Death Rate (per 100,000)", xlab="Age group", axes=FALSE)
 #' lines(ag, females[2,], type = "b", pch = 2)
 #' lines(ag, females[3,], type = "b", pch = 3)
 #' lines(ag, females[4,], type = "b", pch = 4)
@@ -264,7 +266,7 @@
 #' j <- c(1,1,1,2,3)
 #' dr <- getDiag(females,i,j)
 #' plot(dr[[1]], dr[[6]], type="b", xlim = c(1,5), ylim = c(0,50), 
-#'      ylab = "Death Rate (per 100,000)", xlab="Age group", axes=F)
+#'      ylab = "Death Rate (per 100,000)", xlab="Age group", axes=FALSE)
 #' lines(dr[[2]], dr[[7]], type="b", pch=2)
 #' lines(dr[[3]], dr[[8]], type="b", pch=3)
 #' lines(dr[[4]], dr[[9]], type="b", pch=4)

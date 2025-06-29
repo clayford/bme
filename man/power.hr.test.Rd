@@ -4,8 +4,16 @@
 \alias{power.hr.test}
 \title{Power calculation for Hazard Ratio Test}
 \usage{
-power.hr.test(n = NULL, hr, p1, pi2, sig.level = 0.05, power = NULL,
-  alternative = c("two.sided", "one.sided"), tol = .Machine$double.eps^0.25)
+power.hr.test(
+  n = NULL,
+  hr,
+  p1,
+  pi2,
+  sig.level = 0.05,
+  power = NULL,
+  alternative = c("two.sided", "one.sided"),
+  tol = .Machine$double.eps^0.25
+)
 }
 \arguments{
 \item{n}{number of subjects needed for study}
@@ -47,4 +55,3 @@ Newman (2001), pages 286 - 287
 \seealso{
 \code{\link{hazard.ratio.test}}
 }
-

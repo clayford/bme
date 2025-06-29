@@ -4,12 +4,14 @@
 \name{ovarian.cancer}
 \alias{ovarian.cancer}
 \title{Ovarian cancer data}
-\format{data frame with 35 obervations and 3 variables:
+\format{
+data frame with 35 obervations and 3 variables:
 \describe{
  \item{grade}{indicator of the malignant potential of the tumor: High, Low}
  \item{time}{survival time measured in days}
  \item{status}{censoring variable; 0 = censored; 1 = died of ovarian cancer}
-}}
+}
+}
 \source{
 Newman (2001), Table 9.6; Fleming, et al. Modified Kolmogorov-Smirnov test procedures with application to arbitrarily 
 right-censored data. \emph{Biometrics} 36, 607-625.
@@ -22,4 +24,3 @@ Data from a cohort study of women with stage II or IIIA ovarian cancer, where th
 disease.
 }
 \keyword{datasets}
-

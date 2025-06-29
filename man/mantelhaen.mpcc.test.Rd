@@ -45,4 +45,3 @@ Newman (2001), pages 243 - 246.
 \seealso{
 \code{\link[stats]{mcnemar.test}}
 }
-

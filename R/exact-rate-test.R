@@ -20,6 +20,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{A character string giving the name of the data.} 
 #'   }
+#' @export
 #' @references Newman (2001), page 203-4.
 #' @examples 
 #' ## Example 10.3
@@ -39,15 +40,15 @@ exact.rate.test <- function(time, status, null=1, conf.level = 0.95, upper = 100
   names(null) <- names(est)
   # CI
   alpha <- (1-conf.level)/2
-  f1 <- function(x)1 - ppois(q = d-1, lambda = n*x) - alpha
-  f2 <- function(x)ppois(q = d, lambda = n*x) - alpha
-  f1.out <- uniroot(f1, interval = c(0,upper))
-  f2.out <- uniroot(f2, interval = c(0,upper))
+  f1 <- function(x)1 - stats::ppois(q = d-1, lambda = n*x) - alpha
+  f2 <- function(x)stats::ppois(q = d, lambda = n*x) - alpha
+  f1.out <- stats::uniroot(f1, interval = c(0,upper))
+  f2.out <- stats::uniroot(f2, interval = c(0,upper))
   CINT <- c(f1.out$root, f2.out$root)
   attr(CINT, "conf.level") <- conf.level
   
   # test
-  p.value <- min( min(ppois(q = d, lambda = n*null), 1 - ppois(q = d-1, lambda = n*null)) * 2, 1)
+  p.value <- min( min(stats::ppois(q = d, lambda = n*null), 1 - stats::ppois(q = d-1, lambda = n*null)) * 2, 1)
   RVAL <- list(p.value = p.value,estimate = est, null.value = null,
                conf.int = CINT, alternative = alternative,
                method = "Exact Hazard Rate Test for a single sample", 

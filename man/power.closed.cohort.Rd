@@ -4,9 +4,17 @@
 \alias{power.closed.cohort}
 \title{Power calculations for unstratified closed cohort studies}
 \usage{
-power.closed.cohort(n = NULL, delta, p2, rho = 1, sig.level = 0.05,
-  power = NULL, type = c("RD", "RR", "OR"), alternative = c("two.sided",
-  "one.sided"), tol = .Machine$double.eps^0.25)
+power.closed.cohort(
+  n = NULL,
+  delta,
+  p2,
+  rho = 1,
+  sig.level = 0.05,
+  power = NULL,
+  type = c("RD", "RR", "OR"),
+  alternative = c("two.sided", "one.sided"),
+  tol = .Machine$double.eps^0.25
+)
 }
 \arguments{
 \item{n}{number of observations}
@@ -73,4 +81,3 @@ Newman (2001), pages 283 - 285
 \seealso{
 \code{\link[stats]{power.prop.test}} which can perform Risk Difference power calculations assuming \code{rho = 1}
 }
-

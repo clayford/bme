@@ -37,17 +37,17 @@ power.smr.test <- function(n = NULL, smr, r, sig.level = 0.05, power = NULL,
   alternative <- match.arg(alternative)
   tside <- switch(alternative, one.sided = 1, two.sided = 2)
   p.body <- quote({
-    pnorm(sqrt(r * n * 4 * (sqrt(smr) - 1)^2) - qnorm(sig.level/tside, lower.tail = FALSE))
+    stats::pnorm(sqrt(r * n * 4 * (sqrt(smr) - 1)^2) - stats::qnorm(sig.level/tside, lower.tail = FALSE))
   })
   if (is.null(power)) 
     power <- eval(p.body)
   else if (is.null(n)) 
-    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+    n <- stats::uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
                  tol = tol, extendInt = "upX")$root
   NOTE <- "n is amount of person-time needed for the study;\n      Ea is the expected number of deaths needed for the study"  
   METHOD <- "Standardized Mortality Ratio (SMR) Test power calculation"
   structure(list(n = n, smr = smr, r = r,
-                 Ea = (qnorm(sig.level/tside, lower.tail = FALSE) + qnorm(power))^2 /(4 * (sqrt(smr) - 1)^2),
+                 Ea = (stats::qnorm(sig.level/tside, lower.tail = FALSE) + stats::qnorm(power))^2 /(4 * (sqrt(smr) - 1)^2),
                  sig.level = sig.level, 
                  power = power, alternative = alternative, note = NOTE, 
                  method = METHOD), class = "power.htest")

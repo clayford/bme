@@ -18,7 +18,8 @@
 #'   \item{alternative}{A character string describing the alternative hypothesis. Currently only "two.sided".} 
 #'   \item{method}{A character string indicating the method employed.} 
 #'   \item{data.name}{A character string giving the name of the data.} }
-#' @seealso \code{\link{riskratio}} in the epitools package.
+#' @seealso \code{\link[epitools]{riskratio}} in the epitools package.
+#' @export
 #' @references Newman (2001), pages 143-144.
 #' @examples 
 #' ## Example 6.1
@@ -44,15 +45,15 @@ risk.ratio.test <- function(data, conf.level=0.95, Wald=TRUE){
   # variance
   v <- b[1]/(a[1]*r[1]) + b[2]/(a[2]*r[2])
   alpha <- (1-conf.level)/2
-  CINT <- exp(log(est) + c(-1,1) * qnorm(1 - alpha) * sqrt(v))
+  CINT <- exp(log(est) + c(-1,1) * stats::qnorm(1 - alpha) * sqrt(v))
   attr(CINT, "conf.level") <- conf.level
   if(Wald){
     STATISTIC <- ((log(est)^2) * r[1] * r[2] * m[1]) / (sum(data) * m[2])
-    p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+    p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
   } else {
     # LRT of association
     STATISTIC <- 2*sum(data * log(data/epitools::expected(data)))
-    p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+    p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
   }
   names(STATISTIC) <- "X-squared"
   METHOD <- paste(if(Wald) "Wald" else "Likelihood Ratio", "Test of association for risk ratio")

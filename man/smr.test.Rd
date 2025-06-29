@@ -63,4 +63,3 @@ Newman (2001), page 255-258.
 \seealso{
 \code{\link[epitools]{ageadjust.indirect}} in the \code{epitools} package.
 }
-

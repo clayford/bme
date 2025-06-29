@@ -26,6 +26,7 @@
 #' }
 #' 
 #' @seealso \code{\link{cdlt}} and \code{\link{mdlt}}
+#' @export
 #' @references Newman (2001), pages 264-269.
 #' @examples
 #' ## Example 13.1

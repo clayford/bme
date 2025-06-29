@@ -4,9 +4,11 @@
 \name{oral}
 \alias{oral}
 \title{Oral contraceptive data (2 x 2 matrix)}
-\format{2 x 2 matrix \describe{ 
+\format{
+2 x 2 matrix \describe{ 
  \item{Myocardial infarction}{case, control} 
- \item{Oral Contraceptive}{yes, no} }}
+ \item{Oral Contraceptive}{yes, no} }
+}
 \source{
 Newman (2001), Table 11.2; Shapiro, et al. (1979) Oral-contraceptive use in relation to myocardial
 infarction. \emph{The Lancet} April 7, 743-746
@@ -19,4 +21,3 @@ Data from a case-control study investigating oral contraceptives as a risk
 factor for myocardial infarction.
 }
 \keyword{datasets}
-

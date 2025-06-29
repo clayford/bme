@@ -4,11 +4,13 @@
 \name{breast}
 \alias{breast}
 \title{Breast cancer data (2 x 2 matrix)}
-\format{2 x 2 matrix
+\format{
+2 x 2 matrix
 \describe{
  \item{survival}{dead, alive}
  \item{receptor.level}{amount of estrogen receptor that is present in breast tissue: low, high}
-}}
+}
+}
 \source{
 Newman (2001)
 }
@@ -26,4 +28,3 @@ Table 5.10, page 140 (\code{\link{breast.stage}});
 Table 9.1, page 175 (\code{\link{breast.survival}})
 }
 \keyword{datasets}
-

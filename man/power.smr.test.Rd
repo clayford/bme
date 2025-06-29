@@ -4,8 +4,15 @@
 \alias{power.smr.test}
 \title{Power calculation for Standardized Mortality Ratio (SMR) Test}
 \usage{
-power.smr.test(n = NULL, smr, r, sig.level = 0.05, power = NULL,
-  alternative = c("two.sided", "one.sided"), tol = .Machine$double.eps^0.25)
+power.smr.test(
+  n = NULL,
+  smr,
+  r,
+  sig.level = 0.05,
+  power = NULL,
+  alternative = c("two.sided", "one.sided"),
+  tol = .Machine$double.eps^0.25
+)
 }
 \arguments{
 \item{n}{n is amount of person-time needed for study}
@@ -46,4 +53,3 @@ Newman (2001), pages 285 - 286.
 \seealso{
 \code{\link{smr.test}}
 }
-

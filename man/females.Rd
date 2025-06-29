@@ -4,11 +4,13 @@
 \name{females}
 \alias{females}
 \title{Female death rates in Canada, all causes}
-\format{5 x 5 matrix
+\format{
+5 x 5 matrix
 \describe{
  \item{Year}{1950 - 1990}
  \item{Age group}{30-34, 40-44, 50-54, 60-64, 70-74}
-}}
+}
+}
 \source{
 Newman (2001), Table 12.3.
 }
@@ -33,7 +35,7 @@ legend("topright", legend = colnames(females), pch = 1:5, title = "Age group")
 ## Fig 12.2(b)
 ag <- unclass(factor(colnames(females)))
 plot(ag, females[1,], type="b", ylim = c(0,50),
-     ylab = "Death Rate (per 100,000)", xlab="Age group", axes=F)
+     ylab = "Death Rate (per 100,000)", xlab="Age group", axes=FALSE)
 lines(ag, females[2,], type = "b", pch = 2)
 lines(ag, females[3,], type = "b", pch = 3)
 lines(ag, females[4,], type = "b", pch = 4)
@@ -59,7 +61,7 @@ i <- c(3,2,1,1,1)
 j <- c(1,1,1,2,3)
 dr <- getDiag(females,i,j)
 plot(dr[[1]], dr[[6]], type="b", xlim = c(1,5), ylim = c(0,50), 
-     ylab = "Death Rate (per 100,000)", xlab="Age group", axes=F)
+     ylab = "Death Rate (per 100,000)", xlab="Age group", axes=FALSE)
 lines(dr[[2]], dr[[7]], type="b", pch=2)
 lines(dr[[3]], dr[[8]], type="b", pch=3)
 lines(dr[[4]], dr[[9]], type="b", pch=4)
@@ -70,4 +72,3 @@ legend("top", legend = seq(1930,1970,10), pch = 1:5, title = "Birth Cohort")
 rm(i,j,dr, getDiag)
 }
 \keyword{datasets}
-

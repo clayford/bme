@@ -4,12 +4,14 @@
 \name{breast.receptor}
 \alias{breast.receptor}
 \title{Breast cancer data, stratified by receptor level (2 x 3 x 2 array)}
-\format{\code{breast} 2 x 3 x 2 array
+\format{
+\code{breast} 2 x 3 x 2 array
 \describe{
  \item{survival}{dead, alive}
  \item{stage}{stage of disease: I, II, III}
  \item{receptor.level}{amount of estrogen receptor that is present in breast tissue: low, high}
-}}
+}
+}
 \source{
 Newman (2001)
 }
@@ -27,4 +29,3 @@ Table 5.10, page 140 (\code{\link{breast.stage}});
 Table 9.1, page 175 (\code{\link{breast.survival}})
 }
 \keyword{datasets}
-

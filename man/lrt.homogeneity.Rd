@@ -44,4 +44,3 @@ with(breast.survival, lrt.homogeneity(time, status, receptor.level, stage))
 \references{
 Newman (2001), page 221.
 }
-

@@ -4,8 +4,14 @@
 \alias{k.hazard.ratio.test}
 \title{Hazard Ratio Test of association for survival data with k strata}
 \usage{
-k.hazard.ratio.test(time, status, exposure, strata, Wald = TRUE,
-  conf.level = 0.95)
+k.hazard.ratio.test(
+  time,
+  status,
+  exposure,
+  strata,
+  Wald = TRUE,
+  conf.level = 0.95
+)
 }
 \arguments{
 \item{time}{a numeric vector of survival times.}
@@ -64,4 +70,3 @@ Newman (2001), page 219 - 221, 226.
 \code{\link{hazard.ratio.test}} for unstratified survival data and \code{\link{hazard.ratios}} 
 for calculating estimated hazard ratios of stratified survival data.
 }
-

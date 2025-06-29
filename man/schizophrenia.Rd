@@ -4,14 +4,16 @@
 \name{schizophrenia}
 \alias{schizophrenia}
 \title{Schizophrenia data}
-\format{data frame with 8 rows and 5 variables
+\format{
+data frame with 8 rows and 5 variables
 \describe{
 \item{age.group}{the age group}
 \item{cohort.deaths}{number of deaths (of any cause) among schizophrenia cohort}
 \item{cohort.py}{cohort person years}
 \item{alberta.deaths}{number of deaths for Alberta males in 1981}
 \item{alberta.pop}{population of Alberta males in 1981}
-}}
+}
+}
 \source{
 Newman (2001), Table 12.2(a); Newman and Bland (1991). Mortality in a cohort of patients with 
 schizophrenia: a record linkage study. \emph{Canadian Journal of Psychiatry} 36, 239 - 245.
@@ -25,4 +27,3 @@ for schizophrenia in the province of Alberta, Canada at some time during 1976 -
 1985. This is an example of a retrospective cohort study.
 }
 \keyword{datasets}
-

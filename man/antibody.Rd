@@ -4,11 +4,13 @@
 \name{antibody}
 \alias{antibody}
 \title{Antibody data (2 x 2 matrix)}
-\format{a 2 x 2 matrix:
+\format{
+a 2 x 2 matrix:
 \describe{
  \item{diarrhea}{yes, no}
  \item{antibody}{yes, no}
-}}
+}
+}
 \source{
 Glass, et al. Protection against cholera in breast-fed children by antibiotics in breast milk. \emph{NEJM} 308, 1389-1392.
 }
@@ -20,4 +22,3 @@ Portion of data from a cohort study conducted in Bangladesh which investigated w
 in breast milk protect infants from diarrhea due to cholera. Table 4.3, page 97 (Newman)
 }
 \keyword{datasets}
-

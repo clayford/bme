@@ -2,6 +2,7 @@
 % Please edit documentation in R/bme-package.R
 \docType{package}
 \name{bme-package}
+\alias{bme}
 \alias{bme-package}
 \title{Functions and data for Biostatistical Methods in Epidemiology (Newman, 2001)}
 \description{
@@ -13,10 +14,16 @@ This package contains data and functions to complement the book
 This package was created out of simple enjoyment of the book and is not
 endorsed or authorized by the author or the publisher.
 }
-\author{
-Clay Ford - \email{joe.clayton.ford@gmail.com}
-}
 \references{
 Newman, Stephen C. (2001). Biostatistical Methods in Epidemiology. Wiley-Interscience.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/clayford/bme}
+}
 
+}
+\author{
+Clay Ford - \email{joe.clayton.ford@gmail.com}
+}

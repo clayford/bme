@@ -52,4 +52,3 @@ with(breast.survival, rate.test(time = time, status = status, explicit = FALSE))
 \references{
 Newman (2001), page 205.
 }
-

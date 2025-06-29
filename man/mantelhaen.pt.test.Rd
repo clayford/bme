@@ -45,4 +45,3 @@ mantelhaen.pt.test(time = c(2363, 7108), status = c(5,44), exposure = gl(n = 2, 
 \references{
 Newman (2001), page 216.
 }
-

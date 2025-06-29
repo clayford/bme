@@ -21,6 +21,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{A character string giving the name of the data.} 
 #'   }
+#' @export
 #' @references Newman (2001), page 216.
 #' @examples 
 #' ## Example 10.12
@@ -41,10 +42,10 @@ mantelhaen.pt.test <- function(time, status, exposure){
   names(null) <- "hazard ratio"
   e <- n * sum(d) / sum(n)
   STATISTIC <- sum((d - e)^2 / e)
-  p.value <- pchisq(STATISTIC, df = length(d) - 1, lower.tail = FALSE)
+  p.value <- stats::pchisq(STATISTIC, df = length(d) - 1, lower.tail = FALSE)
   if(any(e < 5)) warning(paste("expected counts less than 5:",e[e < 5]))
   names(STATISTIC) <- "Mantel-Haenszel X-squared"
-  p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+  p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
   RVAL <- list(statistic = STATISTIC, p.value = p.value, estimate = est, null.value = null,
                alternative = alternative,
                method = "Mantel-Haenszel test of association for person-time data", 

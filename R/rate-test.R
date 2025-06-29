@@ -20,6 +20,7 @@
 #'    \item{method}{A character string indicating the method employed.} 
 #'    \item{data.name}{A character string giving the name of the data.} 
 #'   }
+#' @export
 #' @references Newman (2001), page 205.
 #' @examples 
 #' ## Examples 10.5 and 10.6
@@ -46,10 +47,10 @@ rate.test <- function(time, status, null=1, conf.level = 0.95, explicit=TRUE){
   # CI
   alpha <- (1-conf.level)/2
   if(explicit){
-    CINT <- est + c(-1,1)*((qnorm(1 - alpha)*sqrt(d))/n)  
+    CINT <- est + c(-1,1)*((stats::qnorm(1 - alpha)*sqrt(d))/n)  
   } else {
     a <- n^2
-    b <- -n*(2*d + qnorm(1 - alpha)^2)
+    b <- -n*(2*d + stats::qnorm(1 - alpha)^2)
     c <- d^2
     CINT <- (-b + c(-1,1)*sqrt(b^2 - 4*a*c))/(2*a)
   }
@@ -58,7 +59,7 @@ rate.test <- function(time, status, null=1, conf.level = 0.95, explicit=TRUE){
   # test
   STATISTIC <- ((d - null*n)^2)/(null*n)
   names(STATISTIC) <- "X-squared"
-  p.value <- pchisq(STATISTIC, df = 1, lower.tail = FALSE)
+  p.value <- stats::pchisq(STATISTIC, df = 1, lower.tail = FALSE)
   RVAL <- list(statistic = STATISTIC, p.value = p.value, estimate = est, 
                null.value = null,
                conf.int = CINT, alternative = alternative,

@@ -38,18 +38,18 @@ power.hr.test <- function(n = NULL, hr, p1, pi2, sig.level = 0.05, power = NULL,
   tside <- switch(alternative, one.sided = 1, two.sided = 2)
   p2 <- 1 - p1
   p.body <- quote({
-    pnorm(sqrt((p1*p2*log(HR)^2) * (p1 * (1 - (1 - pi2)^HR) + p2*pi2) * n) - 
-            qnorm(sig.level/tside, lower.tail = FALSE))
+    stats::pnorm(sqrt((p1*p2*log(hr)^2) * (p1 * (1 - (1 - pi2)^hr) + p2*pi2) * n) - 
+                   stats::qnorm(sig.level/tside, lower.tail = FALSE))
   })
   if (is.null(power)) 
     power <- eval(p.body)
   else if (is.null(n)) 
-    n <- uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
+    n <- stats::uniroot(function(n) eval(p.body) - power, c(1, 1e+07), 
                  tol = tol, extendInt = "upX")$root
   NOTE <- "n is the number of subjects needed for the study;\n      m is the number of deaths needed for the study"  
   METHOD <- "Hazard Ratio Test power calculation"
   structure(list(n = n, hr = hr, 
-                 m = (qnorm(sig.level/tside, lower.tail = FALSE) + qnorm(power))^2 /(p1*p2*log(HR)^2),
+                 m = (stats::qnorm(sig.level/tside, lower.tail = FALSE) + stats::qnorm(power))^2 /(p1*p2*log(hr)^2),
                  sig.level = sig.level, 
                  power = power, alternative = alternative, note = NOTE, 
                  method = METHOD), class = "power.htest")
