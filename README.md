@@ -8,6 +8,6 @@ It is a work in progress and for educational purposes only. It has been created 
 
 Install from GitHub:
 ```R
-# install.packages("devtools")
-devtools::install_github("clayford/bme")
+# install.packages("remotes")
+remotes::install_github("clayford/bme")
 ```
